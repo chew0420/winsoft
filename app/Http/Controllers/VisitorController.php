@@ -23,10 +23,6 @@ class VisitorController extends Controller
         }
         $products = $query->get();
 
-        if(session()->has('LoggedCustomer')) {
-            return view('customer.shopPage.shopPage', ['products'=> $products , 'categories'=> $categories, 'selected_category' => $selected_category]);
-        } else {
-            return view('visitor.shopPage.shopPage', ['products'=> $products , 'categories'=> $categories, 'selected_category' => $selected_category]);
-        }
+        return view('visitor.shopPage.shopPage', ['products'=> $products , 'categories'=> $categories, 'selected_category' => $selected_category]);
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\VisitorController;
 
 Route::get('/', [PageController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
@@ -23,3 +24,4 @@ Route::get('/logout',[LogoutController::class,'logout']);
 Route::get('/customer/shop',[CustomerController::class,'shop']);
 Route::get('/customer/service',[CustomerController::class,'bookService'])->name('customer.book.service');
 Route::post('/customer/service',[CustomerController::class, 'storeService']); 
+Route::get('/shop',[VisitorController::class, 'shop']); 
