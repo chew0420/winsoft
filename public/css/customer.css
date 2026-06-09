@@ -190,3 +190,115 @@
                 font-size: 18px;
                 font-weight: bold;
             }
+
+            /* book service container */
+        .service-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* success popup dialog */
+        .success-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .success-container {
+            background: white;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: popupFadeIn 0.3s ease;
+        }
+        .success-container-header {
+            background: #28a745;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            color: white;
+        }
+        .success-container-header h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .success-container-body {
+            padding: 30px;
+        }
+        .success-container-body p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .success-container-body .request-id {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 15px 0;
+        }
+        .success-container-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        .success-container-footer button {
+            background: #007bff;
+            width: auto;
+            padding: 10px 30px;
+            margin: 0;
+        }
+        @keyframes popupFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
