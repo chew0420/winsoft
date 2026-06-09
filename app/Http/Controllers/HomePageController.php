@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\tbl_product;
+use App\Models\tbl_user;
+use App\Models\tbl_service_request;
+use App\Models\tbl_order;
 
 
 class HomePageController extends Controller
@@ -17,9 +20,29 @@ class HomePageController extends Controller
             $products = tbl_product::take(4)->get();
             return view('customer.homePage.homePage', ['userSession' => $userSession], ['products' => $products]);
 
-        } else if(session()->has('LoggedAdmin')){
+        } else if(session()->has('LoggedSuperadmin')){
             $adminSession = session()->get('LoggedSuperadmin');
-            return view('superadmin.homePage.homePage', ['adminSession' => $adminSession]);
+
+            $adminName = session()->get('LoggedSuperadmin');
+            $admin = tbl_user::where('email', $adminName)->first();
+
+            $totalUsers = tbl_user::count();
+            $totalProducts = tbl_product::count();
+            $totalServices = tbl_service_request::count();
+            $totalOrders = tbl_order::count();
+
+            $recentServices = tbl_service_request::orderBy('created_at', 'desc')->limit(5)->get();
+            $recentUsers = tbl_user::orderBy('created_at', 'desc')->limit(5)->get();
+
+            return view('superadmin.homePage.homePage', [
+                'adminSession' => $adminSession, 
+                'admin' => $admin, 
+                'totalUsers' => $totalUsers, 
+                'totalProducts' => $totalProducts, 
+                'totalServices' => $totalServices, 
+                'totalOrders' => $totalOrders, 
+                'recentServices' => $recentServices, 
+                'recentUsers' => $recentUsers]);
 
         } else if(session()->has('LoggedStaff')){
             $staffSession = session()->get('LoggedStaff');

@@ -18,7 +18,7 @@ class PageController extends Controller
             } elseif (session()->has('LoggedTechnician')) {
                 return redirect('technicianHomePage');
             } elseif (session()->has('LoggedSuperadmin')) {
-                return redirect('superAdminHomePage');
+                return redirect('superadminHomePage');
             }
         }
         $products = tbl_product::take(4)->get();

@@ -47,7 +47,7 @@ class LoginController extends Controller
             return redirect('customerHomePage');
 
         } else if ($userInfo->role === 'admin') {
-            $request->session()->put('LoggedAdmin', $userInfo->email);
+            $request->session()->put('LoggedSuperadmin', $userInfo->email);
             return redirect('superadminHomePage');
 
         } else if ($userInfo->role === 'staff') {
