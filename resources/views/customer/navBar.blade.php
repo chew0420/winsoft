@@ -8,7 +8,7 @@
     <body>
         <!-- top nav bar -->
         <div class="navbar">
-            <a href="/"><img src="img/winsoftlogo.png" alt="Winsoft Logo""></a>
+            <a href="/"><img src="/img/winsoftlogo.png" alt="Winsoft Logo""></a>
             <div>
             <a href="/cart"><i class="fas fa-shopping-cart" style="font-size: 24px; color: #333;"></i></a>
             <a href="/profile"><i class="fas fa-user" style="font-size: 24px; color: #333;"></i></a>
@@ -19,10 +19,10 @@
         <!-- page nav bar -->
         <div class="second-nav">
             <a href="/">Home</a>
-            <a href="/shop" >Shopping</a>
-            <a href="/service">Service</a>
-            <a href="/contact">Contact Us</a>
-            <a href="/locations">Store Location</a>
+            <a href="/customer/shop" >Shopping</a>
+            <a href="/customer/service">Service</a>
+            <a href="/customer/contact">Contact Us</a>
+            <a href="/customer/locations">Store Location</a>
         </div>
     </body>
 </html>

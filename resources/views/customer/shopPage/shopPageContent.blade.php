@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Winsoft Solution</title>
-        <link href="css/customer.css" rel="stylesheet"/>
+        <link href="/css/customer.css" rel="stylesheet"/>
     </head>
     <body>
         <!-- showing current category -->
@@ -20,7 +20,7 @@
         <!-- catagory filter -->
         <div class="category-nav">
             @foreach ($categories as $category)
-            <a href="/shop?category={{ urlencode($category->name) }}" class="{{ $selected_category == $category->name ? 'active-category' : '' }}">{{ $category->name }}</a>
+            <a href="/customer/shop?category={{ urlencode($category->name) }}" class="{{ $selected_category == $category->name ? 'active-category' : '' }}">{{ $category->name }}</a>
             @endforeach
         </div>
         
@@ -29,7 +29,7 @@
             @if(count($products) > 0)
             <div class="products-grid">
                 @foreach($products as $product)
-                <a href="/productDetail?{{ $product->product_id }}"" style="text-decoration: none; color: inherit;">
+                <a href="/customer/productDetail?{{ $product->product_id }}"" style="text-decoration: none; color: inherit;">
                     <div class="product-card">
                         @if($product->image)
                         <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px;">
