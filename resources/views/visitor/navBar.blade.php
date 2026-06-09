@@ -19,8 +19,8 @@
         <div class="second-nav">
             <a href="/">Home</a>
             <a href="/shop" >Shopping</a>
-            <a href="/service">Service</a>
-            <a href="/contact">Contact Us</a>
+            <a href="/login">Service</a>
+            <a href="/contactUs">Contact Us</a>
             <a href="/locations">Store Location</a>
         </div>
     </body>

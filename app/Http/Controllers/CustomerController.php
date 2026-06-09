@@ -88,4 +88,8 @@ class CustomerController extends Controller
             'requestId' => $requestId
         ]);
     }
+
+    public function storeLocation(){
+        return view('customer.storeLocationPage.storeLocationPage');
+    }
 }

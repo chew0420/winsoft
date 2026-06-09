@@ -24,4 +24,5 @@ Route::get('/logout',[LogoutController::class,'logout']);
 Route::get('/customer/shop',[CustomerController::class,'shop']);
 Route::get('/customer/service',[CustomerController::class,'bookService'])->name('customer.book.service');
 Route::post('/customer/service',[CustomerController::class, 'storeService']); 
+Route::get('/customer/storeLocation', [CustomerController::class, 'storeLocation']);
 Route::get('/shop',[VisitorController::class, 'shop']); 

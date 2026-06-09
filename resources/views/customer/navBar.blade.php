@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Winsoft Solution</title>
-        <link href="css/customer.css" rel="stylesheet"/>
+        <link href="/css/customer.css" rel="stylesheet"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
     <body>
@@ -21,8 +21,8 @@
             <a href="/">Home</a>
             <a href="/customer/shop" >Shopping</a>
             <a href="/customer/service">Service</a>
-            <a href="/customer/contact">Contact Us</a>
-            <a href="/customer/locations">Store Location</a>
+            <a href="/customer/contactUs">Contact Us</a>
+            <a href="/customer/storeLocation">Store Location</a>
         </div>
     </body>
 </html>
