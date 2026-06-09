@@ -17,6 +17,6 @@ Route::get('/staffHomePage',[HomePageController::class,'index']);
 Route::get('/technicianHomePage',[HomePageController::class,'index']);
 Route::get('/mainPage',[PageController::class,'index']);
 Route::get('/logout',[LogoutController::class,'logout']);
-Route::get('/shop',[ShopController::class,'shop']);
+Route::get('/shop',[CustomerController::class,'shop']);
 Route::get('/service',[CustomerController::class,'bookService'])->name('customer.book.service');
 Route::post('/service',[CustomerController::class, 'storeService']); 
