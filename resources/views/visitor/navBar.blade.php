@@ -21,7 +21,7 @@
             <a href="/shop" >Shopping</a>
             <a href="/login">Service</a>
             <a href="/contactUs">Contact Us</a>
-            <a href="/locations">Store Location</a>
+            <a href="/storeLocation">Store Location</a>
         </div>
     </body>
 </html>
