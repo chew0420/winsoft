@@ -5,6 +5,8 @@
         <link href="css/visitor.css" rel="stylesheet"/>
     </head>
     <body>
-        
+        @include('visitor.navBar')
+        @include('visitor.shopPage.shopPageContent')
+        @include('visitor.footer')
     </body>
 </html>
