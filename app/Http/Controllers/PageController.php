@@ -12,7 +12,7 @@ class PageController extends Controller
         if(session()->has('LoggedCustomer') || session()->has("LoggedStaff") || session()->has('LoggedTechnician') || session()->has('LoggedSuperadmin'))
         {
             if (session()->has('LoggedCustomer')) {
-                return redirect('homePage');
+                return redirect('customerHomePage');
             } elseif (session()->has('LoggedStaff')) {
                 return redirect('superAdminHomePage');
             } elseif (session()->has('LoggedTechnician')) {

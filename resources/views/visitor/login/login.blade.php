@@ -154,7 +154,7 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="index.php"><img src="img/winsoftlogo.png" alt="Winsoft Logo"></a>
+        <a href="/"><img src="img/winsoftlogo.png" alt="Winsoft Logo"></a>
         <p style="font-size: 25px; font-weight: bold;">Login</p>
     </div>
 
@@ -182,5 +182,10 @@
             </div>
         </div>
     </div>
+    @if(session()->has('fail'))
+    <script>
+        alert('{{ session()->get('fail') }}');
+    </script>
+    @endif
 </body>
 </html>

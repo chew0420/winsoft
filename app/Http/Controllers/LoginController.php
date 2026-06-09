@@ -29,7 +29,7 @@ class LoginController extends Controller
             }
         }
 
-        return redirect()->back()->with('fail', 'Email or Password is Invalid');
+        return redirect()->back()->with('fail', 'Email or Password is Invalid !');
     }
 
     private function clearSession($request)
