@@ -167,7 +167,8 @@
         
         <div class="form-section">
             <h2>Login</h2>
-            <form method="post">
+            <form method="post" action="{{ url('/login') }}">
+                @csrf
                 <label>Email Address</label>
                 <input type="email" name="email" required placeholder="Enter your email">
                 
