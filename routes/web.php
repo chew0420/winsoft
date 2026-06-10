@@ -35,3 +35,4 @@ Route::get('/shop',[VisitorController::class, 'shop']);
 Route::get('/contactUs', [VisitorController::class, 'contactUs']);
 Route::get('/storeLocation',[VisitorController::class, 'storeLocation']); 
 Route::get('/product/{id}', [VisitorController::class, 'productDetail'])->name('product.detail');
+Route::post('/visitorAddCart', [VisitorController::class, 'redirectlogin'])->name('visitor.add.to.cart');

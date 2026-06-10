@@ -354,7 +354,7 @@
                 </div>
 
                 @if($product->stock_quantity > 0)
-                <form method="post" action="{{ url('#') }}" id="pdAddToCartForm">
+                <form method="post" action="{{ url('/visitorAddCart') }}" id="pdAddToCartForm">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->product_id }}">
 

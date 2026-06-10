@@ -48,4 +48,8 @@ class VisitorController extends Controller
             'relatedProducts' => $relatedProducts,
         ]);
     }
+
+    public function redirectlogin(){
+        return view('visitor.login.login');
+    }
 }
