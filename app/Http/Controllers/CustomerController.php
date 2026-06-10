@@ -89,6 +89,13 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function contactUs(){
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        return view('customer.contactUsPage.contactUsPage', ['customer' => $customer]);
+    }
+
     public function storeLocation(){
         return view('customer.storeLocationPage.storeLocationPage');
     }
