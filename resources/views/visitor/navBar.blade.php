@@ -7,7 +7,7 @@
     <body>
         <!-- top nav bar -->
         <div class="navbar">
-            <a href="/"><img src="img/winsoftlogo.png" alt="Winsoft Logo""></a>
+            <a href="/"><img src="/img/winsoftlogo.png" alt="Winsoft Logo""></a>
             <div>
                 <a href="/">Home</a>
                 <a href="/login">Login</a>
