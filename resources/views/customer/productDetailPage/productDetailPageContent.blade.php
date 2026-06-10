@@ -280,6 +280,29 @@
     </style>
 </head>
 <body>
+    <!-- flash messages -->
+     @if(session()->has('success'))
+        <div class="pd-flash-message pd-flash-success">
+            <i class="fas fa-check-circle"></i> {{ session()->get('success') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.pd-flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
+    @elseif(session()->has('error'))
+        <div class="pd-flash-message pd-flash-error">
+            <i class="fas fa-exclamation-circle"></i> {{ session()->get('error') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.pd-flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
+    @endif
+
     <div class="pd-wrapper">
         <!-- breadcrumb -->
         <div class="pd-breadcrumb">
@@ -331,7 +354,7 @@
                 </div>
 
                 @if($product->stock_quantity > 0)
-                <form method="post" action="{{ url('/cart/add') }}" id="pdAddToCartForm">
+                <form method="post" action="{{ url('/customer/cart/add') }}" id="pdAddToCartForm">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->product_id }}">
 

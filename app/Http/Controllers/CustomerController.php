@@ -7,6 +7,7 @@ use App\Models\tbl_product;
 use App\Models\tbl_category;
 use App\Models\tbl_user;
 use App\Models\tbl_service_request;
+use App\Models\tbl_cart;
 
 class CustomerController extends Controller
 {
@@ -120,6 +121,97 @@ class CustomerController extends Controller
     }
 
     public function addToCart(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login')->with('error', 'Please login to add items to cart');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $request->validate([
+            'product_id' => 'required',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $product = tbl_product::find($request->product_id);
+
+        if(!$product) {
+            return redirect()->back()->with('error', 'Product not found');
+        }
+
+        if($product->stock_quantity < $request->quantity) {
+            return redirect()->back()->with('error', 'Not enough stock available');
+        }
+
+        $cartItem = tbl_cart::where('user_id', $customer->user_id)->where('product_id', $request->product_id)->first();
+
+        if($cartItem){
+            $cartItem->quantity += $request->quantity;
+            $cartItem->save();
+        }else{
+            $cart = new tbl_cart();
+            $cart->user_id = $customer->user_id;
+            $cart->product_id = $product->product_id;
+            $cart->quantity = $request->quantity;
+            $cart->save();
+        }
+
+        return redirect()->back()->with('success', 'Product added to cart!');
+    }
+
+    public function viewCart(){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $cartItems = tbl_cart::where('user_id', $customer->user_id)->with('product')->get();
+
+        $subtotal = 0;
+        foreach($cartItems as $item) {
+            $subtotal += $item->product->price * $item->quantity;
+        }
+
+        $shipping = 10.00;
+        $total = $subtotal + $shipping;
+
+        return view('customer.cart', [
+            'cartItems' => $cartItems,
+            'subtotal' => $subtotal,
+            'shipping' => $shipping,
+            'total' => $total
+        ]);
+    }
+
+    public function updateCart(Request $request){
+        $cart = tbl_cart::find($request->cart_id);
+        if($cart) {
+            $cart->quantity = $request->quantity;
+            $cart->save();
+            
+            $subtotal = $cart->product->price * $cart->quantity;
+            return response()->json([
+                'success' => true,
+                'subtotal' => number_format($subtotal, 2)
+            ]);
+        }
         
+        return response()->json(['error' => 'Cart item not found'], 404);
+    }
+
+    // Remove from Cart
+    public function removeFromCart($id){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+        
+        $cart = tbl_cart::find($id);
+        if($cart) {
+            $cart->delete();
+        }
+        
+        return redirect()->back()->with('success', 'Item removed from cart');
     }
 }

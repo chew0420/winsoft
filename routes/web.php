@@ -30,3 +30,7 @@ Route::get('/product/{id}', [CustomerController::class, 'productDetail'])->name(
 Route::get('/shop',[VisitorController::class, 'shop']); 
 Route::get('/contactUs', [VisitorController::class, 'contactUs']);
 Route::get('/storeLocation',[VisitorController::class, 'storeLocation']); 
+Route::post('/customer/cart/add', [CustomerController::class, 'addToCart']);
+Route::get('/customer/cart', [CustomerController::class, 'viewCart']);
+Route::post('/customer/cart/update', [CustomerController::class, 'updateCart']);
+Route::get('/customer/cart/remove/{id}', [CustomerController::class, 'removeFromCart']);

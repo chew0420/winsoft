@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class tbl_cart extends Model
 {
     //
-    protected $table = 'carts';
+    protected $table = 'tbl_cart';
     protected $primaryKey = 'cart_id';
 
     public function user()
