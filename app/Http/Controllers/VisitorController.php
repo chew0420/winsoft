@@ -26,6 +26,10 @@ class VisitorController extends Controller
         return view('visitor.shopPage.shopPage', ['products'=> $products , 'categories'=> $categories, 'selected_category' => $selected_category]);
     }
 
+    public function contactUs(){
+        return view('visitor.contactUsPage.contactUsPage');
+    }
+
     public function storeLocation(){
         return view('visitor.storeLocationPage.storeLocationPage');
     }

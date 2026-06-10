@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winsoft Solution</title>
-    <link href="/css/customer.css" rel="stylesheet"/>
+    <link href="/css/visitor.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -75,22 +75,22 @@
             <div class="contact-form">
                 <h2>Send Us a Message</h2>
 
-                <form method="post" action="{{ url('/contact-us') }}">
+                <form method="post" action="{{ url('/contactUs') }}">
                     @csrf
 
                     <div class="form-group">
                         <label>Your Name *</label>
-                        <input type="text" name="name" value="{{ $customer->name }}" required disabled>
+                        <input type="text" name="name" required>
                     </div>
 
                     <div class="form-group">
                         <label>Email Address *</label>
-                        <input type="email" name="email" value="{{ $customer->email }}" required disabled>
+                        <input type="email" name="email" required>
                     </div>
 
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="text" name="phone" value="{{ $customer->phone_number }}" required disabled>
+                        <input type="text" name="phone"" required>
                     </div>
 
                     <div class="form-group">
