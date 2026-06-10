@@ -34,3 +34,4 @@ Route::get('/customer/cart/remove/{id}', [CustomerController::class, 'removeFrom
 Route::get('/shop',[VisitorController::class, 'shop']); 
 Route::get('/contactUs', [VisitorController::class, 'contactUs']);
 Route::get('/storeLocation',[VisitorController::class, 'storeLocation']); 
+Route::get('/product/{id}', [VisitorController::class, 'productDetail'])->name('product.detail');
