@@ -124,13 +124,13 @@
         .pd-qty-btn {
             width: 35px;
             height: 35px;
-            background: #f8f9fa;
+            background: #888787;
             border: none;
             cursor: pointer;
             font-size: 18px;
         }
         .pd-qty-btn:hover {
-            background: #e9ecef;
+            background: #686868;
         }
         .pd-qty-input {
             width: 50px;

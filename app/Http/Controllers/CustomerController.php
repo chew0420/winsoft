@@ -177,7 +177,7 @@ class CustomerController extends Controller
         $shipping = 10.00;
         $total = $subtotal + $shipping;
 
-        return view('customer.cart', [
+        return view('customer.cartPage.cartPage', [
             'cartItems' => $cartItems,
             'subtotal' => $subtotal,
             'shipping' => $shipping,
