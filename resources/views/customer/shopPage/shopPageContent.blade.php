@@ -29,7 +29,7 @@
             @if(count($products) > 0)
             <div class="products-grid">
                 @foreach($products as $product)
-                <a href="{{ url('/product/'.$product->product_id) }}"" style="text-decoration: none; color: inherit;">
+                <a href="{{ url('/customer/product/'.$product->product_id) }}" style="text-decoration: none; color: inherit;">
                     <div class="product-card">
                         @if($product->image)
                         <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px;">

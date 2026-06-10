@@ -15,17 +15,18 @@
             <h2>🔥 Top Products</h2>
             <div class="products">
                 @foreach($products as $product)
-                    <div class="product-card">
-                        @if($product->image)
-                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" style="width:100%; height:150px; object-fit:cover; border-radius:5px;">
-                        @else
-                            <div style="width:100%; height:150px; background:#ddd; display:flex; align-items:center; justify-content:center;">No Image</div>
-                        @endif
-                        <h3>{{ $product->name }}</h3>
-                        <p class="price">RM {{ number_format($product->price, 2) }}</p>
-                        <p>{{ substr($product->description, 0, 60) }}...</p>
-                        <a href="login.php" class="btn">Login to Buy</a>
-                    </div>
+                    <a href="{{ url('/customer/product/'.$product->product_id) }}" style="text-decoration: none; color: inherit;">
+                        <div class="product-card">
+                            @if($product->image)
+                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" style="width:100%; height:150px; object-fit:cover; border-radius:5px;">
+                            @else
+                                <div style="width:100%; height:150px; background:#ddd; display:flex; align-items:center; justify-content:center;">No Image</div>
+                            @endif
+                            <h3>{{ $product->name }}</h3>
+                            <p class="price">RM {{ number_format($product->price, 2) }}</p>
+                            <p>{{ substr($product->description, 0, 60) }}...</p>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         </div>
