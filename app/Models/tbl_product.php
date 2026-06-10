@@ -8,6 +8,7 @@ class tbl_product extends Model
 {
     //
     protected $table = "tbl_product";
+    protected $primaryKey = 'product_id';
 
     public function category()
     {

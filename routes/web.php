@@ -26,6 +26,7 @@ Route::get('/customer/service',[CustomerController::class,'bookService'])->name(
 Route::post('/customer/service',[CustomerController::class, 'storeService']); 
 Route::get('/customer/contactUs', [CustomerController::class, 'contactUs']);
 Route::get('/customer/storeLocation', [CustomerController::class, 'storeLocation']);
+Route::get('/product/{id}', [CustomerController::class, 'productDetail'])->name('product.detail');
 Route::get('/shop',[VisitorController::class, 'shop']); 
 Route::get('/contactUs', [VisitorController::class, 'contactUs']);
 Route::get('/storeLocation',[VisitorController::class, 'storeLocation']); 

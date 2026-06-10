@@ -99,4 +99,27 @@ class CustomerController extends Controller
     public function storeLocation(){
         return view('customer.storeLocationPage.storeLocationPage');
     }
+
+    public function productDetail ($id){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+        
+        $product = tbl_product::find($id);
+
+        if(!$product){
+            return redirect('/customer/shop')->with('error', 'Product not found');
+        }
+
+        $relatedProducts = tbl_product::where('category_id', $product->category_id)->where('product_id', '!=', $id)->take(4)->get();
+        
+        return view('customer.productDetailPage.productDetailPage', [
+            'product' => $product,
+            'relatedProducts' => $relatedProducts,
+        ]);
+    }
+
+    public function addToCart(Request $request){
+        
+    }
 }
