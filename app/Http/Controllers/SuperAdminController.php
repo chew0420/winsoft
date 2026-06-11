@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\tbl_user;
 use Illuminate\Support\Facades\Hash;
+use App\Models\tbl_product;
 
 class SuperAdminController extends Controller
 {
@@ -68,5 +69,31 @@ class SuperAdminController extends Controller
         }
 
         return redirect('/superadmin/staffList')->with('error', 'User not found');
+    }
+
+    public function productList()
+    {
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $products = tbl_product::with('category')->orderBy('created_at')->get();
+
+        return view('superadmin.productListPage.productListPage', ['products'=> $products]);
+    }
+
+    public function deleteProduct($id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $product = tbl_product::find($id);
+
+        if($product) {
+            $product->delete();
+            return redirect('/superadmin/productList')->with('success', 'Product deleted successfully!');
+        }
+
+        return redirect('/superadmin/productList')->with('error', 'Product not found');
     }
 }

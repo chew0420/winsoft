@@ -26,7 +26,7 @@
                     <a href="/superadmin/staffList" class="nav-link">
                         <i class="bi bi-people"></i> Staff Management
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="/superadmin/productList" class="nav-link">
                         <i class="bi bi-box-seam"></i> Products
                     </a>
                     <a href="#" class="nav-link">
