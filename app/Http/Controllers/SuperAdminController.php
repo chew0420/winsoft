@@ -246,4 +246,125 @@ class SuperAdminController extends Controller
 
         return redirect('/superadmin/productList')->with('success', 'Product updated successfully!');
     }
+
+    public function categoryList(){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+        
+        $categories = tbl_category::all();
+        
+        foreach($categories as $category) {
+            $category->product_count = tbl_product::where('category_id', $category->category_id)->count();
+        }
+        
+        return view('superadmin.categoryListPage.categoryListPage', ['categories' => $categories]);
+    }
+
+    public function addCategory(){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+        
+        return view('superadmin.addCategoryPage.addCategoryPage');
+    }
+
+    public function storeCategory(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+    
+        $request->validate([
+            'name' => 'required|string|max:100|unique:tbl_category,name',
+            'status' => 'required|in:active,inactive'
+        ]);
+        
+        $category = new tbl_category();
+        $category->name = $request->name;
+        $category->status = $request->status;
+        $category->save();
+        
+        return redirect('/superadmin/categoryList')->with('success', 'Category added successfully!');
+    }
+
+    public function deleteCategory($id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $category = tbl_category::find($id);
+
+        if(!$category) {
+            return redirect('/superadmin/categories')->with('error', 'Category not found');
+        }
+
+        $productCount = tbl_product::where('category_id', $id)->count();
+        if($productCount > 0) {
+            return redirect('/superadmin/categoryList')->with('error', 'Cannot delete category. It contains ' . $productCount . ' product(s). Reassign them first.');
+        }
+
+        $category->delete();
+
+        return redirect('/superadmin/categoryList')->with('success','Category deleted successfully!');
+    }
+
+    public function editCategory($id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $category = tbl_category::find($id);
+
+        if(!$category) {
+            return redirect('/superadmin/categoryList')->with('error', 'Category not found');
+        }
+
+        $productCount = tbl_product::where('category_id', $id)->count();
+        $products = tbl_product::where('category_id', $id)->get();
+
+        return view('superadmin.editCategoryPage.editCategoryPage', [
+            'category' => $category,
+            'productCount' => $productCount,
+            'products' => $products
+        ]);
+    }
+
+    public function updateCategory(Request $request, $id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $category = tbl_category::find($id);
+
+        if(!$category) {
+            return redirect('/superadmin/categoryList')->with('error', 'Category not found');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:100|unique:tbl_category,name,' . $id . ',category_id',
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        $category->name = $request->name;
+        $category->status = $request->status;
+        $category->save();
+
+        return redirect('/superadmin/categoryList')->with('success', 'Category updated successfully!');
+    }
+
+    public function removeProductFromCategory($productId){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $product = tbl_product::find($productId);
+
+        if($product) {
+            $product->category_id = null;
+            $product->save();
+            return redirect()->back()->with('success', 'Product removed from category successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Product not found');
+    }
 }

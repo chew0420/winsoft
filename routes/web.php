@@ -50,3 +50,10 @@ Route::post('/superadmin/productList/store', [SuperAdminController::class, 'stor
 Route::delete('/superadmin/productList/delete/{id}', [SuperAdminController::class, 'deleteProduct'])->name('superadmin.deleteProduct');
 Route::get('/superadmin/productList/edit/{id}', [SuperAdminController::class, 'editProduct'])->name('superadmin.editProduct');
 Route::post('/superadmin/productList/update/{id}', [SuperAdminController::class, 'updateProduct'])->name('superadmin.updateProduct');
+Route::get('/superadmin/categoryList', [SuperAdminController::class, 'categoryList'])->name('superadmin.categoryList');
+Route::get('/superadmin/categoryList/addCategory', [SuperAdminController::class, 'addCategory'])->name('superadmin.addCategory');
+Route::post('/superadmin/categoryList/store', [SuperAdminController::class, 'storeCategory'])->name('superadmin.storeCategory');
+Route::delete('/superadmin/categoryList/delete/{id}', [SuperAdminController::class, 'deleteCategory'])->name('superadmin.deleteCategory');
+Route::get('/superadmin/categoryList/edit/{id}', [SuperAdminController::class, 'editCategory'])->name('superadmin.editCategory');
+Route::post('/superadmin/categoryList/update/{id}', [SuperAdminController::class, 'updateCategory'])->name('superadmin.updateCategory');
+Route::delete('/superadmin/categoryList/removeProduct/{id}', [SuperAdminController::class, 'removeProductFromCategory']);
