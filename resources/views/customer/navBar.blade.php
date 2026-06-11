@@ -11,7 +11,7 @@
             <a href="/"><img src="/img/winsoftlogo.png" alt="Winsoft Logo""></a>
             <div>
             <a href="/customer/cart"><i class="fas fa-shopping-cart" style="font-size: 24px; color: #333;"></i></a>
-            <a href="/profile"><i class="fas fa-user" style="font-size: 24px; color: #333;"></i></a>
+            <a href="/customer/profile"><i class="fas fa-user" style="font-size: 24px; color: #333;"></i></a>
             <a href="/logout"><i class="fas fa-sign-out-alt" style="font-size: 24px; color: #333;"></i></a>
         </div>
         </div>

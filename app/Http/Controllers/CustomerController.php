@@ -8,6 +8,7 @@ use App\Models\tbl_category;
 use App\Models\tbl_user;
 use App\Models\tbl_service_request;
 use App\Models\tbl_cart;
+use App\Models\tbl_order;
 
 class CustomerController extends Controller
 {
@@ -201,7 +202,6 @@ class CustomerController extends Controller
         return response()->json(['error' => 'Cart item not found'], 404);
     }
 
-    // Remove from Cart
     public function removeFromCart($id){
         if(!session()->has('LoggedCustomer')) {
             return redirect('/login');
@@ -213,5 +213,99 @@ class CustomerController extends Controller
         }
         
         return redirect()->back()->with('success', 'Item removed from cart');
+    }
+
+    public function viewProfile(){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        return view('customer.profilePage.profilePage', ['customer' => $customer]);
+    }
+
+    public function updateProfile(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:tbl_user,email,' . $customer->user_id . ',user_id',
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string'
+        ]);
+
+        $isExist = tbl_user::where('email', $request->email)->where('user_id', '!=', $customer->user_id)->first();
+        if($isExist != null){
+            return redirect()->back()->with('error','Email Already Exist!');
+        }else{
+            $customer->name = $request->name;
+            $customer->email = $request->email;
+            $customer->phone_number = $request->phone_number;
+            $customer->address = $request->address;
+            $customer->save();
+
+            if($request->email != $customerEmail) {
+                session()->put('LoggedCustomer', $request->email); 
+            }
+            return redirect()->back()->with('success', 'Profile updated successfully!');
+        }
+    }
+
+    public function order(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $status = $request->get('status', 'all');
+
+        $query = tbl_order::where('user_id', $customer->user_id);
+        
+        switch($status){
+            case 'to_pay':
+                $query->where('payment_status', 'unpaid');
+                break;
+            case 'to_ship':
+                $query->whereIn('status', ['pending', 'processing']);
+                break;
+            case 'to_receive':
+                $query->whereIn('status', ['shipped', 'delivered']);
+                break;
+            case 'completed':
+                $query->where('status', 'completed');
+                break;
+            case 'cancelled':
+                $query->where('status', 'cancelled');
+                break;
+            default:
+                // all orders
+                break;
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        $counts = [
+            'to_pay' => tbl_order::where('user_id', $customer->user_id)->where('payment_status', 'unpaid')->count(),
+            'to_ship' => tbl_order::where('user_id', $customer->user_id)->whereIn('status', ['pending', 'processing'])->count(),
+            'to_receive' => tbl_order::where('user_id', $customer->user_id)->whereIn('status', ['shipped', 'delivered'])->count(),
+            'completed' => tbl_order::where('user_id', $customer->user_id)->where('status', 'completed')->count(),
+            'cancelled' => tbl_order::where('user_id', $customer->user_id)->where('status', 'cancelled')->count(),
+        ];
+
+        return view('customer.viewOrderPage.viewOrderPage', [
+            'customer' => $customer,
+            'orders' => $orders,
+            'current_status' => $status,
+            'counts' => $counts
+        ]);
     }
 }

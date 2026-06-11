@@ -8,4 +8,5 @@ class tbl_user extends Model
 {
     //
     protected $table = 'tbl_user';
+    protected $primaryKey = 'user_id'; 
 }
