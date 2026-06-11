@@ -20,4 +20,13 @@ class SuperAdminController extends Controller
             'users' => $users
         ]);
     }
+
+    public function addStaff()
+    {
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+        
+        return view('superadmin.addStaffPage.addStaffPage');
+    }
 }

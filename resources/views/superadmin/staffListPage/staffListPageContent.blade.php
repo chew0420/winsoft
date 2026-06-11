@@ -16,11 +16,11 @@
             <div class="welcome-banner p-4 mb-4">
                 <h2><i class="bi bi-people"></i> Staff Management</h2>
             </div>
+            
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <a href="{{ url('/superadmin/addStaff') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Add Staff
-                </a>
+                <a href="{{ url('/superadmin/staffList/addStaff') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Staff</a>
             </div>
+
             <div class="card">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -63,9 +63,6 @@
                                     </td>
                                     <td>{{ date('d/m/Y', strtotime($user->created_at)) }}</td>
                                     <td>
-                                        <a href="{{ url('/superadmin/users/edit/'.$user->user_id) }}" class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil"></i> Edit
-                                        </a>
                                         <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete({{ $user->user_id }})">
                                             <i class="bi bi-trash"></i> Delete
                                         </button>

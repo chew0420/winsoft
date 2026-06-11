@@ -41,3 +41,4 @@ Route::get('/customer/profile', [CustomerController::class, 'viewProfile']);
 Route::post('/customer/profile/update', [CustomerController::class, 'updateProfile']);
 Route::get('/customer/order', [CustomerController::class, 'order'])->name('customer.order');
 Route::get('/superadmin/staffList', [SuperAdminController::class, 'staffList'])->name('superadmin.staffList');
+Route::get('/superadmin/staffList/addStaff', [SuperAdminController::class, 'addStaff'])->name('superadmin.addStaff');
