@@ -101,10 +101,9 @@ class SuperAdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:200',
             'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'required|string',
             'stock_quantity' => 'required|integer|min:0',
-            'min_stock_level' => 'nullable|integer|min:0',
+            'min_stock_level' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:tbl_category,category_id'
         ]);
 
@@ -113,14 +112,33 @@ class SuperAdminController extends Controller
         $product->description = $request->description;
         $product->price = $request->price;
         $product->stock_quantity = $request->stock_quantity;
-        $product->min_stock_level = $request->min_stock_level ?? 5;
+        $product->min_stock_level = $request->min_stock_level;
         $product->category_id = $request->category_id;
         $product->status = 'active';
 
-        $image = $request->file('image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->move(public_path('/img/products'), $imageName);
-        $product->image = '/img/products/' . $imageName;
+        if($request->hasFile('image')) {
+            $image = $request->file('image');
+            
+            // Check file size (max 2MB)
+            if($image->getSize() > 2 * 1024 * 1024) {
+                return redirect()->back()->with('error', 'Image size must be less than 2MB')->withInput();
+            }
+            
+            // Check file extension
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $extension = strtolower($image->getClientOriginalExtension());
+            
+            if(!in_array($extension, $allowedExtensions)) {
+                return redirect()->back()->with('error', 'Only JPG, JPEG, PNG, GIF images are allowed')->withInput();
+            }
+            
+            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $originalName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+            $imageName = $originalName . '_' . date('Ymd_His') . '.' . $extension;
+
+            $image->move(public_path('img'), $imageName);
+            $product->image = 'img/' . $imageName;
+        }
         $product->save();
 
         return redirect('/superadmin/productList')->with('success', 'Product added successfully!');
@@ -134,6 +152,13 @@ class SuperAdminController extends Controller
         $product = tbl_product::find($id);
 
         if($product) {
+            if($product->image && !empty($product->image)) {
+                $imagePath = public_path($product->image);
+                if(file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
             $product->delete();
             return redirect('/superadmin/productList')->with('success', 'Product deleted successfully!');
         }
