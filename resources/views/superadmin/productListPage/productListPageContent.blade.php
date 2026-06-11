@@ -92,7 +92,7 @@
                                 </td>
                                 <td>{{ date('d/m/Y', strtotime($product->created_at)) }}</td>
                                 <td>
-                                    <a href="{{ url('/superadmin/products/edit/'.$product->product_id) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ url('/superadmin/productList/edit/'.$product->product_id) }}" class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i> Edit
                                     </a>
                                     <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete({{ $product->product_id }})">

@@ -15,7 +15,7 @@
         <!-- Sidebar - fixed position -->
         <div class="sidebar">
             <div class="p-3">
-                <h4 class="text-white text-center py-3 mb-4">
+                <h4 class="text-white text-center py-2 mb-2">
                     <img src="/img/winsoftlogo.png" alt="Winsoft Logo"> Winsoft<br>
                     <small class="fs-6">Admin Panel</small>
                 </h4>
@@ -28,6 +28,9 @@
                     </a>
                     <a href="/superadmin/productList" class="nav-link">
                         <i class="bi bi-box-seam"></i> Products
+                    </a>
+                    <a href="/superadmin/categoryList" class="nav-link">
+                        <i class="bi bi-grid"></i> Categories
                     </a>
                     <a href="#" class="nav-link">
                         <i class="bi bi-cart"></i> Orders

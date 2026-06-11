@@ -48,3 +48,5 @@ Route::get('/superadmin/productList', [SuperAdminController::class, 'productList
 Route::get('/superadmin/productList/addProduct', [SuperAdminController::class, 'addProduct'])->name('superadmin.addProduct');
 Route::post('/superadmin/productList/store', [SuperAdminController::class, 'storeProduct'])->name('superadmin.storeProduct');
 Route::delete('/superadmin/productList/delete/{id}', [SuperAdminController::class, 'deleteProduct'])->name('superadmin.deleteProduct');
+Route::get('/superadmin/productList/edit/{id}', [SuperAdminController::class, 'editProduct'])->name('superadmin.editProduct');
+Route::post('/superadmin/productList/update/{id}', [SuperAdminController::class, 'updateProduct'])->name('superadmin.updateProduct');
