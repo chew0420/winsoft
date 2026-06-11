@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\tbl_user;
 use Illuminate\Support\Facades\Hash;
 use App\Models\tbl_product;
+use App\Models\tbl_category;
 
 class SuperAdminController extends Controller
 {
@@ -80,6 +81,49 @@ class SuperAdminController extends Controller
         $products = tbl_product::with('category')->orderBy('created_at')->get();
 
         return view('superadmin.productListPage.productListPage', ['products'=> $products]);
+    }
+
+    public function addProduct()
+    {
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+        $categories = tbl_category::where('status', 'active')->get();
+        
+        return view('superadmin.addProductPage.addProductPage', ['categories'=> $categories]);
+    }
+
+    public function storeProduct(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:200',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'stock_quantity' => 'required|integer|min:0',
+            'min_stock_level' => 'nullable|integer|min:0',
+            'category_id' => 'nullable|exists:tbl_category,category_id'
+        ]);
+
+        $product = new tbl_product();
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock_quantity = $request->stock_quantity;
+        $product->min_stock_level = $request->min_stock_level ?? 5;
+        $product->category_id = $request->category_id;
+        $product->status = 'active';
+
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $image->move(public_path('/img/products'), $imageName);
+        $product->image = '/img/products/' . $imageName;
+        $product->save();
+
+        return redirect('/superadmin/productList')->with('success', 'Product added successfully!');
     }
 
     public function deleteProduct($id){

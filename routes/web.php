@@ -45,4 +45,6 @@ Route::get('/superadmin/staffList/addStaff', [SuperAdminController::class, 'addS
 Route::post('/superadmin/staffList/store', [SuperAdminController::class, 'storeStaff'])->name('superadmin.storeStaff');
 Route::delete('/superadmin/staffList/delete/{id}', [SuperAdminController::class, 'deleteStaff'])->name('superadmin.deleteStaff');
 Route::get('/superadmin/productList', [SuperAdminController::class, 'productList'])->name('superadmin.productList');
+Route::get('/superadmin/productList/addProduct', [SuperAdminController::class, 'addProduct'])->name('superadmin.addProduct');
+Route::post('/superadmin/productList/store', [SuperAdminController::class, 'storeProduct'])->name('superadmin.storeProduct');
 Route::delete('/superadmin/productList/delete/{id}', [SuperAdminController::class, 'deleteProduct'])->name('superadmin.deleteProduct');
