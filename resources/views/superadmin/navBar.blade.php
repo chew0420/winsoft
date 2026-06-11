@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winsoft Solution</title>
-    <link href="css/superadmin.css" rel="stylesheet"/>
+    <link href="/css/superadmin.css" rel="stylesheet"/>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -16,15 +16,15 @@
         <div class="sidebar">
             <div class="p-3">
                 <h4 class="text-white text-center py-3 mb-4">
-                    <img src="img/winsoftlogo.png" alt="Winsoft Logo"> Winsoft<br>
+                    <img src="/img/winsoftlogo.png" alt="Winsoft Logo"> Winsoft<br>
                     <small class="fs-6">Admin Panel</small>
                 </h4>
                 <nav class="nav flex-column">
-                    <a href="/" class="nav-link active">
+                    <a href="/" class="nav-link">
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-people"></i> Users Management
+                    <a href="/superadmin/staffList" class="nav-link">
+                        <i class="bi bi-people"></i> Staff Management
                     </a>
                     <a href="#" class="nav-link">
                         <i class="bi bi-box-seam"></i> Products
