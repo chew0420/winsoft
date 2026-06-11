@@ -42,3 +42,5 @@ Route::post('/customer/profile/update', [CustomerController::class, 'updateProfi
 Route::get('/customer/order', [CustomerController::class, 'order'])->name('customer.order');
 Route::get('/superadmin/staffList', [SuperAdminController::class, 'staffList'])->name('superadmin.staffList');
 Route::get('/superadmin/staffList/addStaff', [SuperAdminController::class, 'addStaff'])->name('superadmin.addStaff');
+Route::post('/superadmin/staffList/store', [SuperAdminController::class, 'storeStaff'])->name('superadmin.storeStaff');
+Route::delete('/superadmin/staffList/delete/{id}', [SuperAdminController::class, 'deleteStaff'])->name('superadmin.deleteStaff');

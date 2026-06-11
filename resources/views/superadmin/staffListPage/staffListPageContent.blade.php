@@ -11,6 +11,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
+    @if(session()->has('success'))
+        <div class="flash-message flash-success">
+            <i class="fas fa-check-circle"></i> {{ session()->get('success') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
+    @elseif(session()->has('error'))
+        <div class="flash-message flash-error">
+            <i class="fas fa-exclamation-circle"></i> {{ session()->get('error') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
+    @endif
     <div class="d-flex">
         <div class="main-content p-4" style="width: 100%;">
             <div class="welcome-banner p-4 mb-4">
@@ -63,9 +84,7 @@
                                     </td>
                                     <td>{{ date('d/m/Y', strtotime($user->created_at)) }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete({{ $user->user_id }})">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete({{ $user->user_id }})"><i class="bi bi-trash"></i> Delete</button>
                                     </td>
                                 </tr>
                                 @empty
@@ -73,7 +92,6 @@
                                     <td colspan="8" class="text-center py-4">
                                         <i class="bi bi-inbox" style="font-size: 48px; color: #ccc;"></i>
                                         <p class="mt-2">No staff found</p>
-                                        <a href="{{ url('/superadmin/users/create') }}" class="btn btn-primary btn-sm">Add Staff</a>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -84,7 +102,20 @@
             </div>
         </div>
     </div>
-    
+
+    <form id="deleteForm" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    <script>
+    function confirmDelete(userId) {
+            if(confirm('Are you sure you want to delete this staff?')) {
+                var form = document.getElementById('deleteForm');
+                form.action = '/superadmin/staffList/delete/' + userId;
+                form.submit();
+            }
+        }
+    </script>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
