@@ -57,3 +57,6 @@ Route::delete('/superadmin/categoryList/delete/{id}', [SuperAdminController::cla
 Route::get('/superadmin/categoryList/edit/{id}', [SuperAdminController::class, 'editCategory'])->name('superadmin.editCategory');
 Route::post('/superadmin/categoryList/update/{id}', [SuperAdminController::class, 'updateCategory'])->name('superadmin.updateCategory');
 Route::delete('/superadmin/categoryList/removeProduct/{id}', [SuperAdminController::class, 'removeProductFromCategory']);
+Route::get('/superadmin/pageList', [SuperAdminController::class, 'pageList'])->name('superadmin.pageList');
+Route::get('/superadmin/webEditor/{id}', [SuperAdminController::class, 'webEditor'])->name('superadmin.webEditor');
+Route::post('/superadmin/webEditor/saveEdit/{id}', [SuperAdminController::class, 'saveEdit'])->name('superadmin.saveEdit');

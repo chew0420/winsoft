@@ -38,7 +38,7 @@
                     <a href="#" class="nav-link">
                         <i class="bi bi-tools"></i> Service Requests
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="/superadmin/pageList" class="nav-link">
                         <i class="bi bi-pencil-square"></i> Website Page
                     </a>
                     <hr class="bg-light">

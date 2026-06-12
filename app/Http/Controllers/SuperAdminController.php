@@ -7,6 +7,8 @@ use App\Models\tbl_user;
 use Illuminate\Support\Facades\Hash;
 use App\Models\tbl_product;
 use App\Models\tbl_category;
+use App\Models\tbl_website_page;
+use Illuminate\Support\Facades\File;
 
 class SuperAdminController extends Controller
 {
@@ -366,5 +368,151 @@ class SuperAdminController extends Controller
         }
 
         return redirect()->back()->with('error', 'Product not found');
+    }
+
+    public function pageList(){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+        
+        $pages = tbl_website_page::all();
+
+        return view('superadmin.pageListPage.pageListPage', ['pages' => $pages]);
+    }
+
+    public function webEditor($id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $page = tbl_website_page::find($id);
+
+        if(!$page) {
+            return redirect('/superadmin/pageList')->with('error', 'Page not found');
+        }
+
+        $filePath = $page->file_path;
+        if(!view()->exists($filePath)) {
+            return redirect('/superadmin/pageList')->with('error', 'View file not found: ' . $filePath);
+        }
+
+        $view = view($filePath);
+        $fileContents = $view->render();
+        $editableContent = $this->generateEditableHTML($fileContents);
+        return view('superadmin.editPage.editPage', ['editableContent' => $editableContent,'page' => $page]);
+    }
+
+    public function generateEditableHTML($content){
+        // Match all HTML opening tags
+        $pattern = '/<(h[1-5]|p|label|a|span|td|[a-zA-Z]+[^>]*\bword\b[^>]*)([^>]*)>/';
+    
+        // Replace each opening tag with the same tag and the contenteditable attribute added
+        $editableContent = preg_replace($pattern, '<$1$2 contenteditable="true">', $content);
+    
+        // Replace <a><img> tags with <img> tags only
+        $editableContent = preg_replace('/<a[^>]*><img([^>]*)><\/a>/', '<img$1>', $editableContent);
+
+        // Remove the "fixed-top" class from the generated HTML
+        $editableContent = str_replace('fixed-top', '', $editableContent);
+
+        $search = '/(<table[^>]*id="acceptancLetterDetailsTable"[^>]*)([^>]*contenteditable="true"[^>]*)(>.*?<\/table>)/s';
+
+        $editableContent = preg_replace_callback($search, function($matches) {
+            $tableHtml = $matches[1] . str_replace(' contenteditable="true"', '', $matches[2]) . $matches[3];
+            $tableHtml = str_replace(' contenteditable="true"', '', $tableHtml);
+            return $tableHtml;
+        }, $editableContent);
+
+        $search = '/(<div[^>]*class="acceptanceLetter"[^>]*)([^>]*)contenteditable="true"([^>]*>.*?<\/div>)/s';
+
+        $editableContent = preg_replace_callback($search, function($matches) {
+            $divHtml = $matches[1] . $matches[2] . $matches[3];
+            return $divHtml;
+        }, $editableContent);
+
+        $search = '/(<div[^>]*id="editContainer"[^>]*)([^>]*)contenteditable="true"([^>]*>.*?<\/div>)/s';
+
+        $editableContent = preg_replace_callback($search, function($matches) {
+            $divHtml = $matches[1] . $matches[2] . $matches[3];
+            return $divHtml;
+        }, $editableContent);
+
+        $search = '/(<div[^>]*)([^>]*)contenteditable="true"([^>]*>.*?<\/div>)/s';
+
+        $editableContent = preg_replace_callback($search, function($matches) {
+            $divHtml = $matches[1] . $matches[2] . $matches[3];
+            return $divHtml;
+        }, $editableContent);
+
+        $search = '/(<div[^>]*)([^>]*)style="[^"]*"[^>]*contenteditable="true"([^>]*>.*?<\/div>)/s';
+
+        $editableContent = preg_replace_callback($search, function($matches) {
+            $divHtml = $matches[1] . $matches[2] . $matches[3];
+            return $divHtml;
+        }, $editableContent);
+
+        $search = '/(<main[^>]*)([^>]*)contenteditable="true"([^>]*>.*?<\/main>)/s';
+
+        $editableContent = preg_replace_callback($search, function($matches) {
+            $divHtml = $matches[1] . $matches[2] . $matches[3];
+            return $divHtml;
+        }, $editableContent);
+    
+        return $editableContent;
+    }
+
+    public function saveEdit(Request $request, $id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $page = tbl_website_page::find($id);
+        if(!$page) {
+            return redirect('/superadmin/pageList')->with('error', 'Page not found');
+        }
+
+        // Clean the file_path - remove any whitespace or newlines
+        $cleanPath = trim(preg_replace('/\s+/', '', $page->file_path));
+        
+        // Convert dot notation to path
+        $relativePath = str_replace('.', '/', $cleanPath);
+        $originalFilePath = resource_path('views/' . $relativePath . '.blade.php');
+        
+        // Create directory if it doesn't exist
+        $directory = dirname($originalFilePath);
+        if (!file_exists($directory)) {
+            mkdir($directory, 0777, true);
+        }
+        
+        $updatedContent = $request->input('updatedContent');
+        $image = $request->file('images');
+        
+        if ($image){
+            $extension = strtolower($image->getClientOriginalExtension());
+            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+            $originalName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+            $imageName = $originalName . '_' . date('Ymd_His') . '.' . $extension;
+            $image->move(public_path('img'), $imageName);
+
+            // Get the file path for the saved image
+            $savedImagePath = 'img/' . $imageName;
+            $pattern = '/<img([^>]*)>/';
+            $updatedContent = preg_replace($pattern, '<img src="'.$savedImagePath.'"$1>', $updatedContent);
+        }
+
+        $updatedContent = $this->removeContentEditable($updatedContent);
+        
+        // Save the updated content to the original file
+        File::put($originalFilePath, $updatedContent);
+        
+        return redirect('superadmin/pageList')->with('success', 'Page updated successfully.');
+    }
+
+    private function removeContentEditable($content){
+        // Remove the contenteditable attribute from all elements
+        $pattern = '/\s*contenteditable="true"/';
+        $updatedContent = preg_replace($pattern, '', $content);
+    
+        return $updatedContent;
     }
 }
