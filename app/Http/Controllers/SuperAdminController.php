@@ -496,8 +496,9 @@ class SuperAdminController extends Controller
 
             // Get the file path for the saved image
             $savedImagePath = 'img/' . $imageName;
-            $pattern = '/<img([^>]*)>/';
-            $updatedContent = preg_replace($pattern, '<img src="'.$savedImagePath.'"$1>', $updatedContent);
+            // Remove old src and add new one
+            $pattern = '/<img([^>]*?)src=["\'].*?["\']([^>]*?)>/';
+            $updatedContent = preg_replace($pattern, '<img$1 src="/'.$savedImagePath.'"$2>', $updatedContent);
         }
 
         $updatedContent = $this->removeContentEditable($updatedContent);
