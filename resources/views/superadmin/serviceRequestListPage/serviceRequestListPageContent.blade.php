@@ -34,10 +34,10 @@
     @endif
     <div class="d-flex">
         <div class="main-content p-4" style="width: 100%;">
+            <div class="welcome-banner p-4 mb-4">
+                <h2><i class="bi bi-list-ul"></i> All Service Requests</h2>
+            </div>
             <div class="card">
-                <div class="card-header bg-white">
-                    <i class="bi bi-list-ul"></i> All Service Requests
-                </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
