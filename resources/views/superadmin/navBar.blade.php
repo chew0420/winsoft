@@ -35,7 +35,7 @@
                     <a href="#" class="nav-link">
                         <i class="bi bi-cart"></i> Orders
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="/superadmin/serviceRequestList" class="nav-link">
                         <i class="bi bi-tools"></i> Service Requests
                     </a>
                     <a href="/superadmin/pageList" class="nav-link">

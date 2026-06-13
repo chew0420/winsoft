@@ -9,6 +9,7 @@ use App\Models\tbl_product;
 use App\Models\tbl_category;
 use App\Models\tbl_website_page;
 use Illuminate\Support\Facades\File;
+use App\Models\tbl_service_request;
 
 class SuperAdminController extends Controller
 {
@@ -515,5 +516,16 @@ class SuperAdminController extends Controller
         $updatedContent = preg_replace($pattern, '', $content);
     
         return $updatedContent;
+    }
+
+    public function serviceRequestList(){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $requests = tbl_service_request::orderBy('created_at','desc')->with('user','technician')->get();
+        $technicians = tbl_user::where('role','technician')->get();
+
+        return view('superadmin.serviceRequestListPage.serviceRequestListPage',['requests'=>$requests, 'technicians'=>$technicians]);
     }
 }
