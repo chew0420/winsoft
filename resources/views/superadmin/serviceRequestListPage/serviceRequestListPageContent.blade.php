@@ -87,7 +87,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <form method="post" action="{{ url('/superadmin/service-requests/assign/'.$request->request_id) }}" class="d-flex gap-2">
+                                        <form method="post" action="{{ url('/superadmin/serviceRequestList/assign/'.$request->request_id) }}" class="d-flex gap-2">
                                             @csrf
                                             <select name="technician_id" class="form-select form-select-sm" style="width: 150px;" required>
                                                 <option value="">Select Technician</option>

@@ -528,4 +528,26 @@ class SuperAdminController extends Controller
 
         return view('superadmin.serviceRequestListPage.serviceRequestListPage',['requests'=>$requests, 'technicians'=>$technicians]);
     }
+
+    public function assignTechnician(Request $request, $id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $serviceRequest = tbl_service_request::find($id);
+        if(!$serviceRequest) {
+            return redirect()->back()->with('error', 'Service request not found');
+        }
+
+        $technicianId = $request->input('technician_id');
+
+        if($technicianId){
+            $serviceRequest->technician_id = $technicianId;
+            $serviceRequest->save();
+
+            return redirect()->back()->with('success', 'Technician assigned successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Please select a technician');
+    }
 }
