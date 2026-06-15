@@ -38,6 +38,7 @@ Route::post('/customer/cart/add', [CustomerController::class, 'addToCart']);
 Route::get('/customer/cart', [CustomerController::class, 'viewCart']);
 Route::post('/customer/cart/update', [CustomerController::class, 'updateCart']);
 Route::get('/customer/cart/remove/{id}', [CustomerController::class, 'removeFromCart']);
+Route::get('/customer/checkout', [CustomerController::class, 'checkout']);
 Route::get('/customer/profile', [CustomerController::class, 'viewProfile']);
 Route::post('/customer/profile/update', [CustomerController::class, 'updateProfile']);
 Route::get('/customer/order', [CustomerController::class, 'order'])->name('customer.order');

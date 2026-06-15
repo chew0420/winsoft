@@ -4,188 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winsoft Solution</title>
-    <style>
-        .cart-wrapper {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .cart-title {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .cart-table {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background: #f8f9fa;
-            padding: 15px;
-            text-align: left;
-            font-weight: bold;
-            color: #333;
-            border-bottom: 1px solid #eee;
-        }
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-        .product-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .product-info img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .product-info h4 {
-            font-size: 16px;
-            color: #333;
-        }
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .qty-btn {
-            width: 30px;
-            height: 30px;
-            background: #888787;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .qty-btn:hover {
-            background: #686868;
-        }
-        .qty-input {
-            width: 50px;
-            height: 30px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .remove-link {
-            color: #dc3545;
-            text-decoration: none;
-        }
-        .remove-link:hover {
-            text-decoration: underline;
-        }
-        .cart-summary {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 350px;
-            margin-left: auto;
-        }
-        .summary-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .checkout-btn {
-            display: block;
-            width: 100%;
-            background: #28a745;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        .checkout-btn:hover {
-            background: #218838;
-        }
-        .continue-shopping {
-            display: inline-block;
-            margin-top: 20px;
-            color: #007bff;
-            text-decoration: none;
-        }
-        .empty-cart {
-            text-align: center;
-            padding: 50px;
-            background: white;
-            border-radius: 15px;
-        }
-        .empty-cart i {
-            font-size: 80px;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-        .empty-cart h3 {
-            margin-bottom: 10px;
-        }
-        .flash-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 8px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-        }
-        .flash-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        @media (max-width: 768px) {
-            .cart-table {
-                overflow-x: auto;
-            }
-            .cart-summary {
-                width: 100%;
-            }
-            .product-info img {
-                width: 50px;
-                height: 50px;
-            }
-        }
-    </style>
+    <link href="/css/customer.css" rel="stylesheet"/>
 </head>
 <body>
     @if(session()->has('success'))
@@ -268,7 +87,7 @@
                     <span>Total</span>
                     <span>RM <span id="grandTotal">0.00</span></span>
                 </div>
-                <a href="#" id="checkoutBtn" class="checkout-btn disabled">Proceed to Checkout</a>
+                <a href="/customer/checkout" id="checkoutBtn" class="checkout-btn disabled">Proceed to Checkout</a>
             </div>
         @else
             <div class="empty-cart">
@@ -291,7 +110,6 @@
         
         const SHIPPING_COST = 10.00;
         
-        // Function to update total based on selected items
         function updateTotal() {
             let selectedItems = document.querySelectorAll('.item-checkbox:checked');
             let totalItems = 0;
@@ -304,18 +122,18 @@
                 totalPrice += price * quantity;
             });
             
-            // Update display
+            // update display
             selectedItemCountSpan.innerText = totalItems;
             selectedTotalPriceSpan.innerText = totalPrice.toFixed(2);
             
-            // Calculate shipping (free if no items selected)
+            // if no item selected then shipping fee = 0
             let shipping = totalItems > 0 ? SHIPPING_COST : 0;
             shippingAmountSpan.innerText = shipping.toFixed(2);
             
             let grandTotal = totalPrice + shipping;
             grandTotalSpan.innerText = grandTotal.toFixed(2);
             
-            // Enable/disable checkout button
+            // enable or disable checkout button
             if(totalItems > 0) {
                 checkoutBtn.classList.remove('disabled');
             } else {
@@ -323,7 +141,7 @@
             }
         }
         
-        // Select All checkbox event
+        // select all checkbox
         if(selectAllCheckbox) {
             selectAllCheckbox.addEventListener('change', function() {
                 itemCheckboxes.forEach(checkbox => {
@@ -333,7 +151,7 @@
             });
         }
         
-        // Individual checkbox events
+        // individual checkbox
         itemCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 // Check if all checkboxes are checked to update Select All
@@ -345,7 +163,7 @@
             });
         });
         
-        // Initial update (total starts at 0)
+        // make total= 0 when user enter cart
         updateTotal();
 
         function updateQuantity(cartId, action) {
@@ -380,6 +198,27 @@
                     quantityInput.value = newQty;
                     document.querySelector('.subtotal-' + cartId).innerText = 'RM ' + data.subtotal;
                     location.reload();
+                }
+            });
+        }
+
+        if(checkoutBtn){
+            checkoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Get selected items
+                const selectedItems = [];
+                document.querySelectorAll('.item-checkbox:checked').forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const cartId = row.id.split('-')[1];
+                    selectedItems.push(cartId);
+                });
+                
+                if(selectedItems.length > 0) {
+                    // Redirect with selected IDs in URL
+                    window.location.href = '{{ url("/customer/checkout") }}?selected_ids=' + selectedItems.join(',');
+                } else {
+                    alert('Please select items to checkout');
                 }
             });
         }

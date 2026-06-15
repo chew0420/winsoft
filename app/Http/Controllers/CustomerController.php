@@ -215,6 +215,41 @@ class CustomerController extends Controller
         return redirect()->back()->with('success', 'Item removed from cart');
     }
 
+    public function checkout(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+        
+        $selectedIds = $request->input('selected_ids');
+
+        if(!$selectedIds) {
+            return redirect('/customer/cart')->with('error', 'Please select items to checkout');
+        }
+
+        $selectedIdsArray = explode(',', $selectedIds);
+
+        $cartItems = tbl_cart::where('user_id', $customer->user_id)->whereIn('cart_id', $selectedIdsArray)->with('product')->get();
+
+        $subtotal = 0;
+        foreach($cartItems as $item) {
+            $subtotal += $item->product->price * $item->quantity;
+        }
+        $shipping = 10.00;
+        $total = $subtotal + $shipping;
+
+        return view('customer.checkoutPage.checkoutPage', [
+            'cartItems' => $cartItems,
+            'subtotal' => $subtotal,
+            'shipping' => $shipping,
+            'total' => $total,
+            'selectedIds' => $selectedIds,
+            'customer' => $customer
+        ]);
+    }
+
     public function viewProfile(){
         if(!session()->has('LoggedCustomer')) {
             return redirect('/login');
