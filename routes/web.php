@@ -10,6 +10,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\TechnicianController;
 
 Route::get('/', [PageController::class, 'index']);
 Route::get('/mainPage',[PageController::class,'index']);
@@ -62,3 +63,4 @@ Route::get('/superadmin/webEditor/{id}', [SuperAdminController::class, 'webEdito
 Route::post('/superadmin/webEditor/saveEdit/{id}', [SuperAdminController::class, 'saveEdit'])->name('superadmin.saveEdit');
 Route::get('/superadmin/serviceRequestList', [SuperAdminController::class, 'serviceRequestList'])->name('superadmin.serviceRequestList');
 Route::post('/superadmin/serviceRequestList/assign/{id}', [SuperAdminController::class, 'assignTechnician']);
+Route::post('/technician/updateStatus/{id}', [TechnicianController::class, 'updateStatus']);
