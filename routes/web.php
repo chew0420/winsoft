@@ -64,3 +64,4 @@ Route::post('/superadmin/webEditor/saveEdit/{id}', [SuperAdminController::class,
 Route::get('/superadmin/serviceRequestList', [SuperAdminController::class, 'serviceRequestList'])->name('superadmin.serviceRequestList');
 Route::post('/superadmin/serviceRequestList/assign/{id}', [SuperAdminController::class, 'assignTechnician']);
 Route::post('/technician/updateStatus/{id}', [TechnicianController::class, 'updateStatus']);
+Route::get('/technician/jobHistory', [TechnicianController::class, 'jobHistory']);

@@ -35,7 +35,7 @@
     <div class="d-flex">
         <div class="main-content p-4" style="width: 100%;">
             <div class="welcome-banner p-4 mb-4">
-                <h2><i class="bi bi-list-ul"></i>My Assigned Job List</h2>
+                <h2><i class="bi bi-list-ul"></i> My Assigned Job List</h2>
             </div>
             <div class="card">
                 <div class="card-body p-0">

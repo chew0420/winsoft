@@ -23,7 +23,7 @@
                     <a href="/" class="nav-link">
                         <i class="bi bi-file-person"></i> Job List
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="/technician/jobHistory" class="nav-link">
                         <i class="bi bi-clock-history"></i> Job History
                     </a>
                     

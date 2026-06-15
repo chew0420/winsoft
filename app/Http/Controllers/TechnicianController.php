@@ -40,4 +40,10 @@ class TechnicianController extends Controller
 
         return redirect()->back()->with('success', 'Job status updated successfully!');
     }
+
+    public function jobHistory(){
+        $jobHistories = tbl_service_request::where('status', 'completed')->with('user')->get();
+
+        return view('technician.jobHistoryPage.jobHistoryPage', ['jobHistories'=> $jobHistories]);
+    }
 }
