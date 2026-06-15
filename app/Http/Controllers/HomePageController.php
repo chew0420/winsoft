@@ -51,7 +51,7 @@ class HomePageController extends Controller
             $technicianSession = session()->get('LoggedTechnician');
             $technician = tbl_user::where('email', $technicianSession)->first();
 
-            $assignedJobs = tbl_service_request::where('technician_id', $technician->user_id)->orderBy('created_at', 'desc')->with('user')->get();
+            $assignedJobs = tbl_service_request::where('technician_id', $technician->user_id)->orderBy('created_at', 'desc')->where('status', '!=', 'completed')->with('user')->get();
             return view('technician.homePage.homePage', ['assignedJobs' => $assignedJobs]);
 
         } else {

@@ -34,7 +34,7 @@ class TechnicianController extends Controller
         if($status == 'completed'){
             $price = $request->input('final_price');
             $job->final_price = $price;
-            $job->completed_date = date('d/m/Y H:i');
+            $job->completed_date = now();
         }
         $job->save();
 
