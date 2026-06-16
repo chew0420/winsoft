@@ -59,9 +59,35 @@
     .order-tab:not(.active) .badge-count {
         background: #6c757d;
     }
+
+    .order-item-name{
+        font-size: 18px;
+        font-weight: bold;
+    }
 </style>
 </head>
 <body>
+    @if(session()->has('success'))
+        <div class="flash-message flash-success">
+            <i class="fas fa-check-circle"></i> {{ session()->get('success') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
+    @elseif(session()->has('error'))
+        <div class="flash-message flash-error">
+            <i class="fas fa-exclamation-circle"></i> {{ session()->get('error') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
+    @endif
     <div class="d-flex">
         <div class="main-content p-4" style="width: 100%;">
             <div class="welcome-banner p-4 mb-4">
@@ -179,7 +205,7 @@
                                                     <h5 class="modal-title">Update Order #{{ $order->order_id }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
-                                                <form method="post" action="{{ url('/superadmin/order/update-status/'.$order->order_id) }}">
+                                                <form method="post" action="{{ url('/superadmin/orderList/updateOrderStatus/'.$order->order_id) }}">
                                                     @csrf
                                                     <div class="modal-body">
                                                         <div class="mb-3">
@@ -193,12 +219,15 @@
                                                                 <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                                             </select>
                                                         </div>
+                                                        <div class="mb-3" id="trackingNumberField{{ $order->order_id }}" style="display: {{ $order->status == 'shipped' ? 'block' : 'none' }};">
+                                                            <label class="form-label">Enter Tracking Number</label>
+                                                            <input type="text" name="tracking_number" class="form-control" value="{{ $order->tracking_number }}" placeholder="Enter Tracking Number">
+                                                        </div>
                                                         <p><strong>Customer:</strong> {{ $order->customer_name }}</p>
                                                         <p><strong>Total Amount:</strong> RM {{ number_format($order->total_price, 2) }}</p>
                                                         <p><strong>Payment Status:</strong> {{ ucfirst($order->payment_status) }}</p>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                         <button type="submit" class="btn btn-primary">Update Status</button>
                                                     </div>
                                                 </form>
@@ -215,6 +244,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body">
+                                                    <!-- Order Information -->
                                                     <div class="row mb-3">
                                                         <div class="col-md-6">
                                                             <p><strong>Customer:</strong> {{ $order->customer_name }}</p>
@@ -223,29 +253,31 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <p><strong>Order Status:</strong> {{ ucfirst($order->status) }}</p>
-                                                            <p><strong>Total Amount:</strong> RM {{ number_format($order->total_amount, 2) }}</p>
+                                                            <p><strong>Total Amount:</strong> RM {{ number_format($order->total_price, 2) }}</p>
                                                             <p><strong>Payment Method:</strong> {{ $order->payment_method ?? 'Not specified' }}</p>
                                                         </div>
                                                     </div>
-                                                    <!-- Items Ordered - List Format -->
-                                                    <h6 class="mt-3">Items Ordered</h6>
-                                                    @if($order->order_items && count($order->order_items) > 0)
-                                                        @foreach($order->order_items as $item)
-                                                        <div class="order-item-row">
-                                                            <div class="order-item-name">{{ $item['product_name'] }}</div>
-                                                            <div class="order-item-details">
-                                                                <span>Qty: {{ $item['quantity'] }}</span>
-                                                                <span>Unit Price: RM {{ number_format($item['unit_price'], 2) }}</span>
-                                                                <span class="order-item-subtotal">RM {{ number_format($item['unit_price'] * $item['quantity'], 2) }}</span>
+                                                    
+                                                    <!-- Items Ordered - Card Format -->
+                                                    <h6 class="mt-3"><strong>Items Ordered:</strong></h6>
+                                                    <div class="order-items-container">
+                                                        @if($order->order_items && count($order->order_items) > 0)
+                                                            @foreach($order->order_items as $item)
+                                                            <div class="order-item-card">
+                                                                <div class="order-item-info">
+                                                                    <div class="order-item-name">{{ $item['product_name'] }}</div>
+                                                                    <div class="order-item-meta">
+                                                                        <span><i class="bi bi-cart"></i>Quantity: {{ $item['quantity'] }} | </span>
+                                                                        <span><i class="bi bi-tag"></i>Unit Price: RM{{ number_format($item['unit_price'], 2)}} | </span>
+                                                                        <span><strong>Subtotal RM{{ number_format($item['unit_price'] * $item['quantity'], 2) }}</strong></span><br>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        @endforeach
-                                                    @else
-                                                        <p class="text-muted">No items found</p>
-                                                    @endif
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            @endforeach
+                                                        @else
+                                                            <p class="text-muted">No items found</p>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -269,6 +301,21 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('select[name="status"]').forEach(select => {
+            select.addEventListener('change', function() {
+                var modal = this.closest('.modal');
+                var trackingNumberField = modal.querySelector('[id^="trackingNumberField"]');
+                if(trackingNumberField) {
+                    if(this.value === 'shipped') {
+                        trackingNumberField.style.display = 'block';
+                    } else {
+                        trackingNumberField.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -604,4 +604,26 @@ class SuperAdminController extends Controller
             'counts' => $counts
         ]);
     }
+
+    public function updateOrderStatus(Request $request, $id){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+        $order = tbl_order::find($id);
+
+        if(!$order) {
+            return redirect()->back()->with('error', 'Order not found');
+        }
+
+        $newStatus = $request->input('status');
+        $trackingNumber = $request->input('tracking_number');
+        
+        $order->status = $newStatus;
+        if($newStatus == 'shipped' && $trackingNumber) {
+            $order->tracking_number = $trackingNumber;
+        }
+        $order->save();
+        
+        return redirect()->back()->with('success', 'Order status updated successfully!');
+    }
 }

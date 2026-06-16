@@ -296,9 +296,15 @@ class CustomerController extends Controller
         $order->order_items = json_encode($orderData); // Store items as JSON
         $order->save();
 
-        tbl_cart::where('user_id', $customer->user_id)
-            ->whereIn('cart_id', $selectedIds)
-            ->delete();
+        foreach($cartItems as $item) {
+            $product = tbl_product::find($item->product_id);
+            if($product) {
+                $product->stock_quantity -= $item->quantity;
+                $product->save();
+            }
+        }
+
+        tbl_cart::where('user_id', $customer->user_id)->whereIn('cart_id', $selectedIds)->delete();
 
         return redirect('/customer/cart')->with('success', 'Order placed successfully! Order ID: #' . $order->order_id);
     }
