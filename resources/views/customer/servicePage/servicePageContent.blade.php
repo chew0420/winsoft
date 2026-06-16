@@ -9,7 +9,7 @@
     <div class="service-container">
         <h2>🔧 Book Repair Service</h2>
 
-        <form method="post" action="{{ url('/service') }}">
+        <form method="post" action="{{ url('/customer/service') }}">
             @csrf
             <label>Name:</label>
             <input type="text" value="{{ $customer->name }}" disabled>

@@ -250,6 +250,59 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function placeOrder(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $selectedIds = explode(',', $request->input('selected_ids'));
+        $paymentMethod = $request->input('payment_method');
+        $shippingAddress = $request->input('shipping_address');
+
+        $cartItems = tbl_cart::where('user_id', $customer->user_id)
+                         ->whereIn('cart_id', $selectedIds)
+                         ->with('product')
+                         ->get();
+
+        $subtotal = 0;
+        foreach($cartItems as $item) {
+            $subtotal += $item->product->price * $item->quantity;
+        }
+        $shipping = 10.00;
+        $total = $subtotal + $shipping;
+
+        $orderData = [];
+        foreach($cartItems as $item) {
+            $orderData[] = [
+                'product_id' => $item->product_id,
+                'product_name' => $item->product->name,
+                'quantity' => $item->quantity,
+                'unit_price' => $item->product->price,
+                'subtotal' => $item->product->price * $item->quantity
+            ];
+        }
+
+        $order = new tbl_order();
+        $order->user_id = $customer->user_id;
+        $order->order_date = now();
+        $order->total_price = $total;
+        $order->status = 'pending';
+        $order->payment_status = 'paid';
+        $order->shipping_address = $shippingAddress ?? $customer->address;
+        $order->payment_method = $paymentMethod;
+        $order->order_items = json_encode($orderData); // Store items as JSON
+        $order->save();
+
+        tbl_cart::where('user_id', $customer->user_id)
+            ->whereIn('cart_id', $selectedIds)
+            ->delete();
+
+        return redirect('/customer/cart')->with('success', 'Order placed successfully! Order ID: #' . $order->order_id);
+    }
+
     public function viewProfile(){
         if(!session()->has('LoggedCustomer')) {
             return redirect('/login');

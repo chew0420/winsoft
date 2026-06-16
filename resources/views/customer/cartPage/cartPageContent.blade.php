@@ -17,6 +17,16 @@
                 if(msg) msg.style.display = 'none';
             }, 3000);
         </script>
+    @elseif(session()->has('error'))
+        <div class="flash-message flash-error">
+            <i class="fas fa-exclamation-circle"></i> {{ session()->get('error') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                let msg = document.querySelector('.flash-message');
+                if(msg) msg.style.display = 'none';
+            }, 3000);
+        </script>
     @endif
 
     <div class="cart-wrapper">
@@ -87,6 +97,10 @@
                     <span>Total</span>
                     <span>RM <span id="grandTotal">0.00</span></span>
                 </div>
+                <form id="checkoutForm" method="POST" action="{{ url('/customer/checkout') }}">
+                    @csrf
+                    <input type="hidden" name="selected_ids" id="selectedIdsInput">
+                </form>
                 <a href="/customer/checkout" id="checkoutBtn" class="checkout-btn disabled">Proceed to Checkout</a>
             </div>
         @else
@@ -215,8 +229,8 @@
                 });
                 
                 if(selectedItems.length > 0) {
-                    // Redirect with selected IDs in URL
-                    window.location.href = '{{ url("/customer/checkout") }}?selected_ids=' + selectedItems.join(',');
+                    document.getElementById('selectedIdsInput').value = selectedItems.join(',');
+                    document.getElementById('checkoutForm').submit();
                 } else {
                     alert('Please select items to checkout');
                 }

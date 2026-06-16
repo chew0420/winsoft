@@ -20,6 +20,7 @@
                 <span class="delivery-address">{{ $customer->address }}</span>
                 <a href="#" class="change-link">(Change)</a>
             </div>
+            <input type="hidden" id="shipping_address" value="{{ $customer->address }}">
         </div>
         <div class="checkout-two-columns">
             <!-- Left Column - Products Ordered -->
@@ -96,31 +97,26 @@
 
     <script>
         // Get selected items from sessionStorage
-        const selectedIds = sessionStorage.getItem('selectedCartItems');
-        
+        const selectedIds = '{{ $selectedIds }}';
+        // Instead of getting from textarea, get from the delivery address card
+        const shippingAddress = document.getElementById('shipping_address').value;
+
         if(!selectedIds) {
-            // If no selected items, redirect back to cart
             window.location.href = '{{ url("/customer/cart") }}';
         }
         
         document.getElementById('placeOrderBtn').addEventListener('click', function() {
             const paymentMethod = document.getElementById('payment_method').value;
-            const shippingAddress = document.getElementById('shipping_address').value;
             
             if(!paymentMethod) {
                 alert('Please select a payment method');
                 return;
             }
             
-            if(!shippingAddress) {
-                alert('Please enter shipping address');
-                return;
-            }
-            
             // Create form and submit
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '{{ url("/customer/place-order") }}';
+            form.action = '{{ url("/customer/placeOrder") }}';
             
             const csrfInput = document.createElement('input');
             csrfInput.type = 'hidden';
@@ -139,7 +135,7 @@
             paymentInput.name = 'payment_method';
             paymentInput.value = paymentMethod;
             form.appendChild(paymentInput);
-            
+
             const addressInput = document.createElement('input');
             addressInput.type = 'hidden';
             addressInput.name = 'shipping_address';

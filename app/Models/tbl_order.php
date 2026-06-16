@@ -8,4 +8,5 @@ class tbl_order extends Model
 {
     //
     protected $table = 'tbl_order';
+    protected $primaryKey = 'order_id';
 }
