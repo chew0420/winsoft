@@ -398,8 +398,18 @@ class SuperAdminController extends Controller
             return redirect('/superadmin/pageList')->with('error', 'View file not found: ' . $filePath);
         }
 
-        $view = view($filePath);
-        $fileContents = $view->render();
+        // IMPORTANT: do NOT render the Blade here.
+        // Rendering will evaluate placeholders like {{ $customer->name }} and may crash
+        // when variables are not provided (Undefined variable / non-object property).
+        $originalRelativePath = str_replace('.', '/', trim($filePath));
+        $absoluteBladePath = resource_path('views/' . $originalRelativePath . '.blade.php');
+        
+        if(!file_exists($absoluteBladePath)) {
+            return redirect('/superadmin/pageList')->with('error', 'Blade file not found: ' . $absoluteBladePath);
+        }
+
+        $fileContents = File::get($absoluteBladePath);
+
         $editableContent = $this->generateEditableHTML($fileContents);
         return view('superadmin.editPage.editPage', ['editableContent' => $editableContent,'page' => $page]);
     }
