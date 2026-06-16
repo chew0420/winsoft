@@ -36,8 +36,8 @@
                     </div>
                     <div class="info-details">
                         <h3>Phone Number</h3>
-                        <p><a href="tel:0123456789">012-345 6789</a></p>
-                        <p><a href="tel:0787654321">07-8765 4321</a></p>
+                        <p>012-345 6789<br>
+                        07-8765 4321</p>
                     </div>
                 </div>
 
@@ -47,8 +47,8 @@
                     </div>
                     <div class="info-details">
                         <h3>Email Address</h3>
-                        <p><a href="mailto:info@winsoft.com.my">info@winsoft.com.my</a></p>
-                        <p><a href="mailto:support@winsoft.com.my">support@winsoft.com.my</a></p>
+                        <p>info@winsoft.com.my<br>
+                        support@winsoft.com.my</p>
                     </div>
                 </div>
 
@@ -58,8 +58,8 @@
                     </div>
                     <div class="info-details">
                         <h3>Business Hours</h3>
-                        <p>Monday - Saturday: 9:15 AM - 6:45 PM</p>
-                        <p>Sunday: Closed</p>
+                        <p>Monday - Saturday: 9:15 AM - 6:45 PM <br>
+                        Sunday: Closed</p>
                     </div>
                 </div>
 
