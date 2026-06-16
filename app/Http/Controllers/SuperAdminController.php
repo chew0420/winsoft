@@ -503,12 +503,78 @@ class SuperAdminController extends Controller
             $updatedContent = preg_replace($pattern, '<img$1 src="/'.$savedImagePath.'"$2>', $updatedContent);
         }
 
+        // Decode and persist data:image/*;base64 images into public/img/
+        $updatedContent = $this->persistBase64Images($updatedContent);
+
         $updatedContent = $this->removeContentEditable($updatedContent);
         
         // Save the updated content to the original file
         File::put($originalFilePath, $updatedContent);
         
         return redirect('superadmin/pageList')->with('success', 'Page updated successfully.');
+    }
+
+    private function persistBase64Images($content){
+        // Replace <img src="data:image/{mime};base64,{data}"> with saved files in public/img
+        $pattern = '/<img([^>]*?)src=["\'](data:image\/(png|jpe?g|gif|webp);base64,([^"\']+))["\']([^>]*?)>/i';
+
+        return preg_replace_callback($pattern, function($matches){
+            $beforeSrcAttrs = $matches[1] ?? '';
+            $mime = strtolower($matches[3] ?? 'jpeg');
+            $base64 = $matches[4] ?? '';
+
+            // Guard: base64 may include whitespace/newlines
+            $base64 = preg_replace('/\s+/', '', $base64);
+
+            $afterAttrs = $matches[5] ?? '';
+
+            if(!$base64) {
+                return '<img'.$beforeSrcAttrs.' src=""'.$afterAttrs.'>';
+            }
+
+            $extension = match($mime){
+                'png' => 'png',
+                'jpg' => 'jpg',
+                'jpeg' => 'jpeg',
+                'gif' => 'gif',
+                'webp' => 'webp',
+                default => 'jpeg'
+            };
+
+            $binary = base64_decode($base64, true);
+            if($binary === false) {
+                return '<img'.$beforeSrcAttrs.' src="'.$matches[2].'"'.$afterAttrs.'>';
+            }
+
+            $filenameBase = 'editor';
+            $oldSrcForName = $matches[2] ?? '';
+
+            if (is_string($oldSrcForName) && preg_match('#/img/([^/\\"\']+?)(?:\.[A-Za-z0-9]+)?$#', $oldSrcForName, $mOld)) {
+                $filenameBase = pathinfo($mOld[1], PATHINFO_FILENAME);
+            } elseif (preg_match('/alt=["\']([^"\']*)["\']/i', $beforeSrcAttrs, $mAlt) && !empty(trim($mAlt[1] ?? ''))) {
+                $filenameBase = pathinfo($mAlt[1], PATHINFO_FILENAME);
+            }
+
+            // Sanitize
+            $filenameBase = preg_replace('/[^A-Za-z0-9\-]/', '_', $filenameBase);
+
+            $filename = $filenameBase . '_' . date('Ymd_His') . '.' . $extension;
+
+            $targetPath = public_path('img/' . $filename);
+
+            if (is_string($oldSrcForName) && preg_match('#/img/([^/\\"\']+?\.[A-Za-z0-9]+)$#', $oldSrcForName, $mOldFile)) {
+                $oldFile = public_path('img/' . $mOldFile[1]);
+                if (file_exists($oldFile)) {
+                    @unlink($oldFile);
+                }
+            }
+
+            file_put_contents($targetPath, $binary);
+
+            $savedSrc = '/img/' . $filename;
+
+            return '<img'.$beforeSrcAttrs.' src="'.$savedSrc.'"'.$afterAttrs.'>';
+        }, $content);
     }
 
     private function removeContentEditable($content){

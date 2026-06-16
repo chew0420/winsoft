@@ -41,7 +41,7 @@
 
             <!-- Store 2: Branch -->
             <div class="store-card">
-                <img src="http://127.0.0.1:8000/img/storebp.jpg" alt="Winsoft Solution Branch" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+Branch'">
+                <img  src="/img/editor_20260616_231817.jpeg" alt="Winsoft Solution Branch" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+Branch'">
                 <div class="store-info">
                     <h2 class="store-name">Winsoft Solution123</h2>
                     <div class="store-address">
