@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\tbl_product;
+use App\Models\tbl_category;
 
 class PageController extends Controller
 {
@@ -22,8 +23,8 @@ class PageController extends Controller
             }
         }
         $products = tbl_product::take(4)->get();
-        
-        return view('visitor.homePage.homePage', ['products' => $products]);
+        $categories = tbl_category::all();
+        return view('visitor.homePage.homePage', ['products' => $products, 'categories'=> $categories]);
     }
 }
 

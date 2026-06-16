@@ -392,26 +392,27 @@ class SuperAdminController extends Controller
         if(!$page) {
             return redirect('/superadmin/pageList')->with('error', 'Page not found');
         }
+        if($page->page_name == 'Website Logo'){
 
-        $filePath = $page->file_path;
-        if(!view()->exists($filePath)) {
-            return redirect('/superadmin/pageList')->with('error', 'View file not found: ' . $filePath);
+        }else{
+            $filePath = $page->file_path;
+            if(!view()->exists($filePath)) {
+                return redirect('/superadmin/pageList')->with('error', 'View file not found: ' . $filePath);
+            }
+
+            $originalRelativePath = str_replace('.', '/', trim($filePath));
+            $absoluteBladePath = resource_path('views/' . $originalRelativePath . '.blade.php');
+            
+            if(!file_exists($absoluteBladePath)) {
+                return redirect('/superadmin/pageList')->with('error', 'Blade file not found: ' . $absoluteBladePath);
+            }
+
+            $fileContents = File::get($absoluteBladePath);
+
+            $editableContent = $this->generateEditableHTML($fileContents);
+            return view('superadmin.editPage.editPage', ['editableContent' => $editableContent,'page' => $page]);
         }
-
-        // IMPORTANT: do NOT render the Blade here.
-        // Rendering will evaluate placeholders like {{ $customer->name }} and may crash
-        // when variables are not provided (Undefined variable / non-object property).
-        $originalRelativePath = str_replace('.', '/', trim($filePath));
-        $absoluteBladePath = resource_path('views/' . $originalRelativePath . '.blade.php');
         
-        if(!file_exists($absoluteBladePath)) {
-            return redirect('/superadmin/pageList')->with('error', 'Blade file not found: ' . $absoluteBladePath);
-        }
-
-        $fileContents = File::get($absoluteBladePath);
-
-        $editableContent = $this->generateEditableHTML($fileContents);
-        return view('superadmin.editPage.editPage', ['editableContent' => $editableContent,'page' => $page]);
     }
 
     public function generateEditableHTML($content){

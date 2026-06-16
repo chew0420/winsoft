@@ -7,7 +7,7 @@ use App\Models\tbl_product;
 use App\Models\tbl_user;
 use App\Models\tbl_service_request;
 use App\Models\tbl_order;
-
+use App\Models\tbl_category;
 
 class HomePageController extends Controller
 {
@@ -18,7 +18,8 @@ class HomePageController extends Controller
         if(session()->has('LoggedCustomer')){
             $userSession = session()->get('LoggedCustomer');
             $products = tbl_product::take(4)->get();
-            return view('customer.homePage.homePage', ['userSession' => $userSession], ['products' => $products]);
+            $categories = tbl_category::all();
+            return view('customer.homePage.homePage', ['userSession' => $userSession, 'products' => $products, 'categories' => $categories]);
 
         } else if(session()->has('LoggedSuperadmin')){
             $adminSession = session()->get('LoggedSuperadmin');
