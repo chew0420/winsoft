@@ -1438,14 +1438,14 @@ td {
 .order-footer {
     background: #f8f9fa;
     padding: 12px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     border-top: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .order-total {
-    margin-left: auto;
+    text-align: right;
 }
 
 .order-total span {
@@ -1453,13 +1453,38 @@ td {
     color: #e42b2b;
 }
 
+.order-footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.received-text {
+    color: #888;
+    font-size: 12px;
+    text-align: left;
+    margin: 0;
+    line-height: 1;
+}
+
+.btn-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
 .received-btn {
     background: #28a745;
     color: white;
     border: none;
-    padding: 6px 15px;
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 17px;
+    align-items: center;
+    margin-top: 0;
 }
 
 .received-btn:hover {

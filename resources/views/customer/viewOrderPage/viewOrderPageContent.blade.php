@@ -133,9 +133,15 @@
                             Order Total: <span>RM {{ number_format($order->total_price, 2) }}</span>
                         </div>
                         @if(in_array($order->status, ['shipped', 'delivered']))
-                            <button class="received-btn" onclick="markAsReceived({{ $order->order_id }})">
-                                <i class="fas fa-check"></i> Received
-                            </button>
+                            <div class="order-footer-actions">
+                                <small class="received-text">Confirm receipt after you've checked the received items</small>
+                                <div class="btn-wrapper" style="display: flex; align-items: center;">
+                                    <button class="received-btn" onclick="markAsReceived({{ $order->order_id }})">
+                                        <i class="fas fa-check"></i> Received
+                                    </button>
+                                </div>
+                                
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -155,5 +161,35 @@
             @endif
         </div>
     </div>
+    <script>
+    function markAsReceived(orderId) {
+        if(confirm('Confirm that you have received this order?')) {
+            fetch('{{ url("/customer/order/updateOrderStatus") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    action: 'received'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                alert('Something went wrong. Please try again.');
+                console.error('Error:', error);
+            });
+        }
+    }
+</script>
 </body>
 </html>

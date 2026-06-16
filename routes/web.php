@@ -43,6 +43,7 @@ Route::post('/customer/placeOrder', [CustomerController::class, 'placeOrder']);
 Route::get('/customer/profile', [CustomerController::class, 'viewProfile']);
 Route::post('/customer/profile/update', [CustomerController::class, 'updateProfile']);
 Route::get('/customer/order', [CustomerController::class, 'order'])->name('customer.order');
+Route::post('/customer/order/updateOrderStatus', [CustomerController::class, 'updateOrderStatus'])->name('customer.updateOrderStatus');
 Route::get('/superadmin/staffList', [SuperAdminController::class, 'staffList'])->name('superadmin.staffList');
 Route::get('/superadmin/staffList/addStaff', [SuperAdminController::class, 'addStaff'])->name('superadmin.addStaff');
 Route::post('/superadmin/staffList/store', [SuperAdminController::class, 'storeStaff'])->name('superadmin.storeStaff');

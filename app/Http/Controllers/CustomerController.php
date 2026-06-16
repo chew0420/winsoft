@@ -402,4 +402,30 @@ class CustomerController extends Controller
             'counts' => $counts
         ]);
     }
+
+    public function updateOrderStatus(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+        
+        $orderId = $request->order_id;
+        $action = $request->action;
+        
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+        
+        $order = tbl_order::where('order_id', $orderId)->where('user_id', $customer->user_id)->first();
+        
+        if(!$order) {
+            return response()->json(['success' => false, 'message' => 'Order not found!']);
+        }
+        if($action == 'received') {
+            $order->status = 'completed';
+            $order->save();
+            
+            return response()->json(['success' => true, 'message' => 'Order completed!']);
+        }
+        
+        return response()->json(['success' => false, 'message' => 'Invalid action']);
+    }
 }

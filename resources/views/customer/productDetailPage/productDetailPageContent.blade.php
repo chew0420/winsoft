@@ -281,7 +281,7 @@
 </head>
 <body>
     <!-- flash messages -->
-     @if(session()->has('success'))
+    @if(session()->has('success'))
         <div class="pd-flash-message pd-flash-success">
             <i class="fas fa-check-circle"></i> {{ session()->get('success') }}
         </div>
