@@ -23,16 +23,20 @@
                     <h2 class="store-name">Winsoft Solution (HQ)</h2>
                     <div class="store-address">
                         <i class="fas fa-map-marker-alt"></i> 
-                        17, Jalan Cempaka 1, Taman Bunga Cempaka Biru,<br>
-                        86400 Parit Raja, Batu Pahat, Johor
+                        <label>
+                            17, Jalan Cempaka 1, Taman Bunga Cempaka Biru,<br>
+                            86400 Parit Raja, Batu Pahat, Johor
+                        </label>
                     </div>
                     <div class="store-phone">
-                        <i class="fas fa-phone"></i> 07-1234 5678
+                        <i class="fas fa-phone"></i> <label>07-1234 5678</label>
                     </div>
                     <div class="store-hours">
                         <i class="fas fa-clock"></i> 
-                        Monday - Saturday: 9:15 AM - 6:45 PM<br>
-                        Sunday: Closed
+                        <label>
+                            Monday - Saturday: 9:15 AM - 6:45 PM<br>
+                            Sunday: Closed
+                        </label>
                     </div>
                     <a href="https://maps.app.goo.gl/UW84SctYLr9TPNLX7" target="_blank" class="map-link"><i class="fas fa-directions"></i> Get Directions</a>
                 </div>
@@ -45,16 +49,20 @@
                     <h2 class="store-name">Winsoft Solution (BP)</h2>
                     <div class="store-address">
                         <i class="fas fa-map-marker-alt"></i> 
-                        15, Jalan Kuning, Taman Bukit Pasir,<br>
-                        83000 Batu Pahat, Johor
+                        <label>
+                            15, Jalan Kuning, Taman Bukit Pasir,<br>
+                            83000 Batu Pahat, Johor
+                        </label>
                     </div>
                     <div class="store-phone">
-                        <i class="fas fa-phone"></i> 018-666 9795
+                        <i class="fas fa-phone"></i> <label>018-666 9795</label>
                     </div>
                     <div class="store-hours">
                         <i class="fas fa-clock"></i> 
-                        Monday - Saturday: 9:15 AM - 5:45 PM<br>
-                        Sunday: Closed
+                        <label>
+                            Monday - Saturday: 9:15 AM - 5:45 PM<br>
+                            Sunday: Closed
+                        </label>
                     </div>
                     <a href="https://maps.app.goo.gl/njEqwBP5PbfDy24p6" target="_blank" class="map-link"><i class="fas fa-directions"></i> Get Directions</a>
                 </div>
