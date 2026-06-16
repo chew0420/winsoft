@@ -10,6 +10,7 @@ use App\Models\tbl_category;
 use App\Models\tbl_website_page;
 use Illuminate\Support\Facades\File;
 use App\Models\tbl_service_request;
+use App\Models\tbl_order;
 
 class SuperAdminController extends Controller
 {
@@ -549,5 +550,58 @@ class SuperAdminController extends Controller
         }
 
         return redirect()->back()->with('error', 'Please select a technician');
+    }
+
+    public function orderList(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $status = $request->get('status', 'all');
+        $query = tbl_order::orderBy('created_at', 'desc');
+
+        switch($status) {
+            case 'to_pay':
+                $query->where('payment_status', 'unpaid');
+                break;
+            case 'to_ship':
+                $query->whereIn('status', ['pending', 'processing']);
+                break;
+            case 'to_receive':
+                $query->whereIn('status', ['shipped', 'delivered']);
+                break;
+            case 'completed':
+                $query->where('status', 'completed');
+                break;
+            case 'cancelled':
+                $query->where('status', 'cancelled');
+                break;
+            default:
+                break;
+        }
+
+        $orders = $query->paginate(15);
+
+        foreach($orders as $order) {
+            $customer = tbl_user::find($order->user_id);
+            $order->customer_name = $customer ? $customer->name : 'Unknown';
+
+            $order->order_items = json_decode($order->order_items, true);
+        }
+
+        $counts = [
+            'all' => tbl_order::count(),
+            'to_pay' => tbl_order::where('payment_status', 'unpaid')->count(),
+            'to_ship' => tbl_order::whereIn('status', ['pending', 'processing'])->count(),
+            'to_receive' => tbl_order::whereIn('status', ['shipped', 'delivered'])->count(),
+            'completed' => tbl_order::where('status', 'completed')->count(),
+            'cancelled' => tbl_order::where('status', 'cancelled')->count(),
+        ];
+
+        return view('superadmin.orderListPage.orderListPage', [
+            'orders' => $orders,
+            'current_status' => $status,
+            'counts' => $counts
+        ]);
     }
 }

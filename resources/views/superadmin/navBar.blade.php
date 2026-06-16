@@ -32,7 +32,7 @@
                     <a href="/superadmin/categoryList" class="nav-link">
                         <i class="bi bi-grid"></i> Categories
                     </a>
-                    <a href="#" class="nav-link">
+                    <a href="/superadmin/orderList" class="nav-link">
                         <i class="bi bi-cart"></i> Orders
                     </a>
                     <a href="/superadmin/serviceRequestList" class="nav-link">
