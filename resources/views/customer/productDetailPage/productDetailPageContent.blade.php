@@ -333,7 +333,7 @@
                 </div>
 
                 <div class="pd-description">
-                    <p>{{ $product->description }}</p>
+                    <p>{!! nl2br(e($product->description)) !!}</p>
                 </div>
 
                 <div class="pd-meta-box">
