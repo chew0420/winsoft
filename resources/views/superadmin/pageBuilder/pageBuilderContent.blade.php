@@ -160,7 +160,6 @@
                                         <div class="section-toolbar">
                                             <div>
                                                 <strong>{{ $section->title ?? ucfirst($section->section_type) }}</strong>
-                                                <span class="badge bg-secondary">{{ $section->section_type }}</span>
                                                 @if($section->is_active)
                                                     <span class="badge bg-success badge-status">Active</span>
                                                 @else
