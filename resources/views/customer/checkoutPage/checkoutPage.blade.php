@@ -7,6 +7,6 @@
 <body>
     @include('customer.navBar')
     @include('customer.checkoutPage.checkoutPageContent')
-    @include('customer.footer')
+    @include('footer')
 </body>
 </html>

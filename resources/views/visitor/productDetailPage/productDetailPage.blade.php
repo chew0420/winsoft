@@ -7,6 +7,6 @@
 <body>
     @include('visitor.navBar')
     @include('visitor.productDetailPage.productDetailPageContent')
-    @include('visitor.footer')
+    @include('footer')
 </body>
 </html>

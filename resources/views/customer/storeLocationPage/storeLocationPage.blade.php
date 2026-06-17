@@ -9,6 +9,6 @@
 <body>
     @include('customer.navBar');
     @include('customer.storeLocationPage.storeLocationPageContent');
-    @include('customer.footer');
+    @include('footer')
 </body>
 </html>

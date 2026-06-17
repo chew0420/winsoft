@@ -9,6 +9,6 @@
 <body>
     @include('visitor.navBar');
     @include('visitor.storeLocationPage.storeLocationPageContent');
-    @include('visitor.footer');
+    @include('footer')
 </body>
 </html>
