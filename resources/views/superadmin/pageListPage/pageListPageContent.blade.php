@@ -45,9 +45,15 @@
                             <div class="card-body py-4">
                                 <i class="bi bi-file-earmark-code" style="font-size: 48px; color: #667eea;"></i>
                                 <p class="text-muted small">{{ $page->page_name }}</p>
-                                <a href="{{ url('/superadmin/webEditor/'.$page->page_id) }}" class="btn btn-primary">
-                                    <i class="bi bi-pencil-square"></i> Edit Page
-                                </a>
+                                @if($page->page_name == 'Visitor Home Page')
+                                    <a href="{{ url('/superadmin/pageBuilder/'.$page->page_id) }}" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i> Edit Page
+                                    </a>
+                                @else
+                                    <a href="{{ url('/superadmin/webEditor/'.$page->page_id) }}" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i> Edit Page
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>

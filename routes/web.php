@@ -68,5 +68,13 @@ Route::get('/superadmin/serviceRequestList', [SuperAdminController::class, 'serv
 Route::post('/superadmin/serviceRequestList/assign/{id}', [SuperAdminController::class, 'assignTechnician']);
 Route::get('/superadmin/orderList', [SuperAdminController::class, 'orderList'])->name('superadmin.orderList');
 Route::post('/superadmin/orderList/updateOrderStatus/{id}', [SuperAdminController::class, 'updateOrderStatus'])->name('superadmin.updateOrderStatus');
+Route::get('/superadmin/pageBuilder/{id}', [SuperAdminController::class, 'webEditor'])->name('superadmin.pageBuilder');
+Route::post('/superadmin/page/{pageId}/addSection', [SuperAdminController::class, 'addSection'])->name('superadmin.addSection');
+Route::post('/superadmin/section/{sectionId}/update', [SuperAdminController::class, 'updateSection'])->name('superadmin.updateSection');
+Route::post('/superadmin/sections/reorder', [SuperAdminController::class, 'reorderSections'])->name('superadmin.reorderSections');
+Route::delete('/superadmin/section/{sectionId}/delete', [SuperAdminController::class, 'deleteSection'])->name('superadmin.deleteSection');
+Route::get('/superadmin/section/{sectionId}/edit', [SuperAdminController::class, 'getSectionEditor'])->name('superadmin.getSectionEditor');
+Route::post('/superadmin/section/{sectionId}/toggle', [SuperAdminController::class, 'toggleSection'])->name('superadmin.toggleSection');
+Route::get('/', [SuperAdminController::class, 'visitorHome'])->name('home');
 Route::post('/technician/updateStatus/{id}', [TechnicianController::class, 'updateStatus']);
 Route::get('/technician/jobHistory', [TechnicianController::class, 'jobHistory']);

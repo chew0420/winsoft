@@ -11,6 +11,7 @@ use App\Models\tbl_website_page;
 use Illuminate\Support\Facades\File;
 use App\Models\tbl_service_request;
 use App\Models\tbl_order;
+use App\Models\tbl_page_section;
 
 class SuperAdminController extends Controller
 {
@@ -392,8 +393,10 @@ class SuperAdminController extends Controller
         if(!$page) {
             return redirect('/superadmin/pageList')->with('error', 'Page not found');
         }
-        if($page->page_name == 'Website Logo'){
+        if($page->page_name == 'Visitor Home Page'){
+            $sections = tbl_page_section::where('page_id', $id)->orderBy('order')->get();
 
+            return view('superadmin.pageBuilder.pageBuilder', ['page' => $page,'sections' => $sections]);
         }else{
             $filePath = $page->file_path;
             if(!view()->exists($filePath)) {
@@ -415,6 +418,182 @@ class SuperAdminController extends Controller
             return view('superadmin.editPage.editPage', ['editableContent' => $editableContent,'page' => $page]);
         }
         
+    }
+
+    public function addSection(Request $request, $pageId){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $request->validate([
+            'section_type' => 'required|in:hero,products,categories,banner,featured,custom_html',
+            'title' => 'nullable|string|max:255',
+        ]);
+
+        $maxOrder = tbl_page_section::where('page_id', $pageId)->max('order') ?? 0;
+
+        $section = new tbl_page_section();
+        $section->page_id = $pageId;
+        $section->section_type = $request->section_type;
+        $section->title = $request->title;
+        $section->order = $maxOrder + 1;
+        $section->is_active = true;
+        
+        $content = $this->getDefaultContent($request->section_type);
+        $section->content = $content;
+        $section->settings = [];
+        $section->save();
+
+        return redirect()->back()->with('success', 'Section added successfully!');
+    }
+
+    private function getDefaultContent($type){
+        switch($type) {
+            case 'hero':
+                return [
+                    'title' => 'Welcome to Winsoft Solution',
+                    'subtitle' => 'Your Trusted Tech Partner',
+                    'image' => 'img/banner.jpg',
+                    'button_text' => 'Shop Now',
+                    'button_url' => '/shop'
+                ];
+            case 'products':
+                return ['limit' => 8];
+            case 'categories':
+                return [];
+            case 'banner':
+                return [
+                    'image' => 'img/banner.jpg',
+                    'link' => '#',
+                    'alt' => 'Banner'
+                ];
+            case 'featured':
+                return ['product_ids' => []];
+            case 'custom_html':
+                return ['html' => '<div class="custom-content"><h3>Custom Content</h3><p>Add your custom HTML here</p></div>'];
+            default:
+                return [];
+        }
+    }
+
+    public function updateSection(Request $request, $sectionId){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $section = tbl_page_section::find($sectionId);
+        if(!$section) {
+            return response()->json(['error' => 'Section not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'section_type' => 'sometimes|in:hero,products,categories,banner,featured,custom_html',
+            'title' => 'nullable|string|max:255',
+            'content' => 'nullable|array',
+            'is_active' => 'sometimes|boolean'
+        ]);
+
+        if(isset($validated['section_type'])) {
+            $section->section_type = $validated['section_type'];
+        }
+        
+        if(isset($validated['title'])) {
+            $section->title = $validated['title'];
+        }
+        
+        if(isset($validated['content'])) {
+            $section->content = $validated['content'];
+        }
+        
+        if(isset($validated['is_active'])) {
+            $section->is_active = $validated['is_active'];
+        }
+        
+        $section->save();
+
+        return response()->json(['success' => 'Section updated successfully!']);
+    }
+
+    public function reorderSections(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $order = $request->input('order', []);
+        
+        foreach($order as $position => $sectionId) {
+            tbl_page_section::where('section_id', $sectionId)
+                ->update(['order' => $position + 1]);
+        }
+
+        return response()->json(['success' => 'Sections reordered successfully!']);
+    }
+
+    public function deleteSection($sectionId){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $section = tbl_page_section::find($sectionId);
+        if($section) {
+            $section->delete();
+            return response()->json(['success' => 'Section deleted successfully!']);
+        }
+
+        return response()->json(['error' => 'Section not found'], 404);
+    }
+
+    public function getSectionEditor($sectionId){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $section = tbl_page_section::find($sectionId);
+        if(!$section) {
+            return response()->json(['error' => 'Section not found'], 404);
+        }
+
+        return view('superadmin.pageBuilder.partials.section_editor', [
+            'section' => $section
+        ]);
+    }
+
+    public function toggleSection($sectionId){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $section = tbl_page_section::find($sectionId);
+        if($section) {
+            $section->is_active = !$section->is_active;
+            $section->save();
+            return response()->json(['success' => 'Section toggled successfully!']);
+        }
+
+        return response()->json(['error' => 'Section not found'], 404);
+    }
+
+    // Update visitor home page method
+    public function visitorHome(){
+        $page = tbl_website_page::where('page_name', 'Visitor Home Page')->first();
+        
+        if($page) {
+            $sections = tbl_page_section::where('page_id', $page->page_id)
+                        ->where('is_active', true)
+                        ->orderBy('order')
+                        ->get();
+            
+            return view('visitor.homePage.homePageContent', ['sections' => $sections]);
+        }
+        
+        // Fallback
+        $products = tbl_product::where('status', 'active')->limit(8)->get();
+        $categories = tbl_category::where('status', 'active')->get();
+        
+        return view('visitor.homePage.homePageContent', [
+            'products' => $products,
+            'categories' => $categories
+        ]);
     }
 
     public function generateEditableHTML($content){
