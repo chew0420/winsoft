@@ -578,10 +578,7 @@ class SuperAdminController extends Controller
         $page = tbl_website_page::where('page_name', 'Visitor Home Page')->first();
         
         if($page) {
-            $sections = tbl_page_section::where('page_id', $page->page_id)
-                        ->where('is_active', true)
-                        ->orderBy('order')
-                        ->get();
+            $sections = tbl_page_section::where('page_id', $page->page_id)->where('is_active', true)->orderBy('order')->get();
             
             return view('visitor.homePage.homePage', ['sections' => $sections]);
         }

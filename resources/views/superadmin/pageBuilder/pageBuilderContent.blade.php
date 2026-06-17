@@ -156,10 +156,9 @@
                                 </div>
                             @else
                                 @foreach($sections as $section)
-                                    <div class="section-item" data-section-id="{{ $section->section_id }}">
+                                    <div class="section-item" data-section-id="{{ $section->section_id }}" data-is-active="{{ $section->is_active ? 'true' : 'false' }}">
                                         <div class="section-toolbar">
                                             <div>
-                                                <span class="drag-handle"><i class="bi bi-grip-vertical"></i></span>
                                                 <strong>{{ $section->title ?? ucfirst($section->section_type) }}</strong>
                                                 <span class="badge bg-secondary">{{ $section->section_type }}</span>
                                                 @if($section->is_active)
@@ -169,10 +168,10 @@
                                                 @endif
                                             </div>
                                             <div class="actions">
-                                                <button class="btn btn-sm btn-info" onclick="editSection({{ $section->section_id }})">
+                                                <button class="btn btn-sm btn-info" style="background-color: #49b4df; color: white; border: none;" onclick="editSection({{ $section->section_id }})">
                                                     <i class="bi bi-pencil"></i> Edit
                                                 </button>
-                                                <button class="btn btn-sm btn-warning" onclick="toggleSection({{ $section->section_id }})">
+                                                <button class="btn btn-sm btn-warning" style="background-color: #ffda33; color: black; border: none;" onclick="toggleSection({{ $section->section_id }})">
                                                     <i class="bi {{ $section->is_active ? 'bi-eye' : 'bi-eye-slash' }}"></i>
                                                 </button>
                                                 <button class="btn btn-sm btn-danger" style="background-color: #dc3545; color: white; border: none;" onclick="deleteSection({{ $section->section_id }})">
@@ -302,9 +301,17 @@
 
         function previewPage() {
             var previewContent = '';
+            // Only include sections that are active
             $('.section-item').each(function() {
-                previewContent += $(this).find('.section-preview').html();
+                var isActive = $(this).data('is-active');
+                if (isActive === true || isActive === 'true') {
+                    previewContent += $(this).find('.section-preview').html();
+                }
             });
+            
+            if (previewContent === '') {
+                previewContent = '<div class="alert alert-warning">No active sections to preview.</div>';
+            }
             
             $('#previewModalBody').html(previewContent);
             $('#previewModal').modal('show');

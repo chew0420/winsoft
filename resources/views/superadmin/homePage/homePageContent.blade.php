@@ -69,25 +69,25 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 mb-2">
-                                    <a href="{{ url('/admin/pages') }}" class="btn btn-outline-primary w-100 py-3">
+                                    <a href="{{ url('/superadmin/pageList') }}" class="btn btn-outline-primary w-100 py-3">
                                         <i class="bi bi-pencil-square fs-4 d-block"></i>
                                         Edit Website
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-2">
-                                    <a href="{{ url('/admin/products/create') }}" class="btn btn-outline-success w-100 py-3">
+                                    <a href="{{ url('/superadmin/productList/addProduct') }}" class="btn btn-outline-success w-100 py-3">
                                         <i class="bi bi-plus-circle fs-4 d-block"></i>
                                         Add Product
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-2">
-                                    <a href="{{ url('/admin/users/create') }}" class="btn btn-outline-warning w-100 py-3">
+                                    <a href="{{ url('/superadmin/staffList/addStaff') }}" class="btn btn-outline-warning w-100 py-3">
                                         <i class="bi bi-person-plus fs-4 d-block"></i>
                                         Add Staff
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-2">
-                                    <a href="{{ url('/admin/service-requests') }}" class="btn btn-outline-info w-100 py-3">
+                                    <a href="{{ url('/superadmin/serviceRequestList') }}" class="btn btn-outline-info w-100 py-3">
                                         <i class="bi bi-file-text fs-4 d-block"></i>
                                         Assign Technician
                                     </a>
@@ -144,7 +144,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-white">
-                            <a href="#" class="text-decoration-none">View all requests →</a>
+                            <a href="/superadmin/serviceRequestList" class="text-decoration-none">View all requests →</a>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-white">
-                            <a href="#" class="text-decoration-none">View all users →</a>
+                            <a href="/superadmin/staffList" class="text-decoration-none">View all users →</a>
                         </div>
                     </div>
                 </div>

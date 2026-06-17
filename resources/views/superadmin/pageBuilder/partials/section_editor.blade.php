@@ -9,19 +9,19 @@
             <label class="form-label">Subtitle</label>
             <input type="text" name="content[subtitle]" value="{{ $section->content['subtitle'] ?? '' }}" class="form-control">
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label class="form-label">Image URL</label>
             <input type="text" name="content[image]" value="{{ $section->content['image'] ?? '' }}" class="form-control">
             <small class="text-muted">Path: img/banner.jpg</small>
-        </div>
+        </div> -->
         <div class="mb-3">
             <label class="form-label">Button Text</label>
             <input type="text" name="content[button_text]" value="{{ $section->content['button_text'] ?? '' }}" class="form-control">
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label class="form-label">Button URL</label>
             <input type="text" name="content[button_url]" value="{{ $section->content['button_url'] ?? '' }}" class="form-control">
-        </div>
+        </div> -->
         <div class="mb-3">
             <label class="form-label">Section Title</label>
             <input type="text" name="title" value="{{ $section->title }}" class="form-control">
@@ -34,7 +34,7 @@
         @csrf
         <div class="mb-3">
             <label class="form-label">Number of Products to Show</label>
-            <input type="number" name="content[limit]" value="{{ $section->content['limit'] ?? 8 }}" class="form-control" min="1" max="50">
+            <input type="number" name="content[limit]" value="{{ $section->content['limit'] ?? 4 }}" class="form-control" min="1" max="50">
         </div>
         <div class="mb-3">
             <label class="form-label">Section Title</label>
@@ -46,14 +46,14 @@
 @elseif($section->section_type == 'banner')
     <form id="sectionForm">
         @csrf
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label class="form-label">Banner Image URL</label>
             <input type="text" name="content[image]" value="{{ $section->content['image'] ?? '' }}" class="form-control">
         </div>
         <div class="mb-3">
             <label class="form-label">Link URL</label>
             <input type="text" name="content[link]" value="{{ $section->content['link'] ?? '#' }}" class="form-control">
-        </div>
+        </div> -->
         <div class="mb-3">
             <label class="form-label">Alt Text</label>
             <input type="text" name="content[alt]" value="{{ $section->content['alt'] ?? '' }}" class="form-control">

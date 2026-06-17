@@ -24,22 +24,22 @@
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                     <a href="/superadmin/staffList" class="nav-link">
-                        <i class="bi bi-people"></i> Staff Management
+                        <i class="bi bi-people"></i> Manage Staff 
                     </a>
                     <a href="/superadmin/productList" class="nav-link">
-                        <i class="bi bi-box-seam"></i> Products
+                        <i class="bi bi-box-seam"></i> Manage Product
                     </a>
                     <a href="/superadmin/categoryList" class="nav-link">
-                        <i class="bi bi-grid"></i> Categories
+                        <i class="bi bi-grid"></i> Manage Category
                     </a>
                     <a href="/superadmin/orderList" class="nav-link">
-                        <i class="bi bi-cart"></i> Orders
+                        <i class="bi bi-cart"></i> Manage Order
                     </a>
                     <a href="/superadmin/serviceRequestList" class="nav-link">
-                        <i class="bi bi-tools"></i> Service Requests
+                        <i class="bi bi-tools"></i> Manage Request
                     </a>
                     <a href="/superadmin/pageList" class="nav-link">
-                        <i class="bi bi-pencil-square"></i> Website Page
+                        <i class="bi bi-pencil-square"></i> Edit Website Page
                     </a>
                     <hr class="bg-light">
                     <a href="/logout" class="nav-link">
