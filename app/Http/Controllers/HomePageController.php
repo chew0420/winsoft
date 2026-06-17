@@ -12,7 +12,7 @@ use App\Models\tbl_category;
 class HomePageController extends Controller
 {
     //
-    function index(){
+    function index(Request $request){
         session()->start();
         
         if(session()->has('LoggedCustomer')){
@@ -46,7 +46,53 @@ class HomePageController extends Controller
 
         } else if(session()->has('LoggedStaff')){
             $staffSession = session()->get('LoggedStaff');
-            return view('staff.homePage.homePage', ['staffSession' => $staffSession]);
+
+            $status = $request->get('status', 'all');
+            $query = tbl_order::orderBy('created_at', 'desc');
+
+            switch($status) {
+                case 'to_pay':
+                    $query->where('payment_status', 'unpaid');
+                    break;
+                case 'to_ship':
+                    $query->whereIn('status', ['pending', 'processing']);
+                    break;
+                case 'to_receive':
+                    $query->whereIn('status', ['shipped', 'delivered']);
+                    break;
+                case 'completed':
+                    $query->where('status', 'completed');
+                    break;
+                case 'cancelled':
+                    $query->where('status', 'cancelled');
+                    break;
+                default:
+                    break;
+            }
+
+            $orders = $query->paginate(15);
+
+            foreach($orders as $order) {
+                $customer = tbl_user::find($order->user_id);
+                $order->customer_name = $customer ? $customer->name : 'Unknown';
+
+                $order->order_items = json_decode($order->order_items, true);
+            }
+
+            $counts = [
+                'all' => tbl_order::count(),
+                'to_pay' => tbl_order::where('payment_status', 'unpaid')->count(),
+                'to_ship' => tbl_order::whereIn('status', ['pending', 'processing'])->count(),
+                'to_receive' => tbl_order::whereIn('status', ['shipped', 'delivered'])->count(),
+                'completed' => tbl_order::where('status', 'completed')->count(),
+                'cancelled' => tbl_order::where('status', 'cancelled')->count(),
+            ];
+            return view('staff.homePage.homePage', [
+                'staffSession' => $staffSession,
+                'orders' => $orders,
+                'current_status' => $status,
+                'counts' => $counts
+            ]);
 
         } else if(session()->has('LoggedTechnician')){
             $technicianSession = session()->get('LoggedTechnician');

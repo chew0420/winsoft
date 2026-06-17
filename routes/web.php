@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\TechnicianController;
+use App\Http\Controllers\StaffController;
 
 Route::get('/', [PageController::class, 'index']);
 Route::get('/mainPage',[PageController::class,'index']);
@@ -78,3 +79,17 @@ Route::post('/superadmin/section/{sectionId}/toggle', [SuperAdminController::cla
 Route::get('/', [SuperAdminController::class, 'visitorHome'])->name('home');
 Route::post('/technician/updateStatus/{id}', [TechnicianController::class, 'updateStatus']);
 Route::get('/technician/jobHistory', [TechnicianController::class, 'jobHistory']);
+Route::post('/staff/updateOrderStatus/{id}', [StaffController::class, 'updateOrderStatus']);
+Route::get('/staff/productList', [StaffController::class, 'productList'])->name('staff.productList');
+Route::get('/staff/productList/addProduct', [StaffController::class, 'addProduct'])->name('staff.addProduct');
+Route::post('/staff/productList/store', [StaffController::class, 'storeProduct'])->name('staff.storeProduct');
+Route::delete('/staff/productList/delete/{id}', [StaffController::class, 'deleteProduct'])->name('staff.deleteProduct');
+Route::get('/staff/productList/edit/{id}', [StaffController::class, 'editProduct'])->name('staff.editProduct');
+Route::post('/staff/productList/update/{id}', [StaffController::class, 'updateProduct'])->name('staff.updateProduct');
+Route::get('/staff/categoryList', [StaffController::class, 'categoryList'])->name('staff.categoryList');
+Route::get('/staff/categoryList/addCategory', [StaffController::class, 'addCategory'])->name('staff.addCategory');
+Route::post('/staff/categoryList/store', [StaffController::class, 'storeCategory'])->name('staff.storeCategory');
+Route::delete('/staff/categoryList/delete/{id}', [StaffController::class, 'deleteCategory'])->name('staff.deleteCategory');
+Route::get('/staff/categoryList/edit/{id}', [StaffController::class, 'editCategory'])->name('staff.editCategory');
+Route::post('/staff/categoryList/update/{id}', [StaffController::class, 'updateCategory'])->name('staff.updateCategory');
+Route::delete('/staff/categoryList/removeProduct/{id}', [StaffController::class, 'removeProductFromCategory']);

@@ -12,7 +12,7 @@
 </head>
 <body>
     @include('staff.navBar')
-    @include('staff.orderListPage.orderListPageContent')
+    @include('staff.addCategoryPage.addCategoryPageContent')
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
