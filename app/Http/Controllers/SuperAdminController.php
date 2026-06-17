@@ -583,14 +583,14 @@ class SuperAdminController extends Controller
                         ->orderBy('order')
                         ->get();
             
-            return view('visitor.homePage.homePageContent', ['sections' => $sections]);
+            return view('visitor.homePage.homePage', ['sections' => $sections]);
         }
         
         // Fallback
         $products = tbl_product::where('status', 'active')->limit(8)->get();
         $categories = tbl_category::where('status', 'active')->get();
         
-        return view('visitor.homePage.homePageContent', [
+        return view('visitor.homePage.homePage', [
             'products' => $products,
             'categories' => $categories
         ]);
