@@ -80,17 +80,17 @@
 
                     <div class="form-group">
                         <label>Your Name *</label>
-                        <input type="text" name="name" value="{{ $customer->name }}" required disabled>
+                        <input type="text" name="name" value="{{ $customer->name ?? ''}}" required disabled>
                     </div>
 
                     <div class="form-group">
                         <label>Email Address *</label>
-                        <input type="email" name="email" value="{{ $customer->email }}" required disabled>
+                        <input type="email" name="email" value="{{ $customer->email ?? ''}}" required disabled>
                     </div>
 
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="text" name="phone" value="{{ $customer->phone_number }}" required disabled>
+                        <input type="text" name="phone" value="{{ $customer->phone_number ?? ''}}" required disabled>
                     </div>
 
                     <div class="form-group">
