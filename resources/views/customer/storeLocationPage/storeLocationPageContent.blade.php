@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winsoft Solution</title>
-    <link href="/css/customer.css" rel="stylesheet"/>
+    <link href="/css/customer.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+
+
     <!-- store location content -->
     <div class="store-container">
         <div class="page-title">
@@ -18,7 +15,7 @@
         <div class="stores-grid">
             <!-- store HQ -->
             <div class="store-card">
-                <img src="{{ asset('img/storehq.jpg') }}" alt="Winsoft Solution HQ" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+HQ'">
+                <img  src="/img/editor_20260617_115308.jpeg" alt="Winsoft Solution HQ" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+HQ'">
                 <div class="store-info">
                     <h2 class="store-name">Winsoft Solution (HQ)</h2>
                     <div class="store-address">
@@ -44,7 +41,7 @@
 
             <!-- Store 2: Branch -->
             <div class="store-card">
-                <img src="{{ asset('img/storebp.jpg') }}" alt="Winsoft Solution Branch" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+Branch'">
+                <img src="/img/editor_20260617_115259.jpeg" alt="Winsoft Solution Branch" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+Branch'">
                 <div class="store-info">
                     <h2 class="store-name">Winsoft Solution (BP)</h2>
                     <div class="store-address">
@@ -69,5 +66,3 @@
             </div>
         </div>
     </div>
-</body>
-</html>
