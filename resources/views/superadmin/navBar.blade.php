@@ -20,7 +20,7 @@
                     <small class="fs-6">Admin Panel</small>
                 </h4>
                 <nav class="nav flex-column">
-                    <a href="/" class="nav-link">
+                    <a href="/superadminHomePage" class="nav-link">
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                     <a href="/superadmin/staffList" class="nav-link">

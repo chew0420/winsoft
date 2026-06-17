@@ -20,7 +20,7 @@
                     <small class="fs-6">Technician Panel</small>
                 </h4>
                 <nav class="nav flex-column">
-                    <a href="/" class="nav-link">
+                    <a href="/technicianHomePage" class="nav-link">
                         <i class="bi bi-file-person"></i> Job List
                     </a>
                     <a href="/technician/jobHistory" class="nav-link">

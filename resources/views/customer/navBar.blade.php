@@ -18,7 +18,7 @@
 
         <!-- page nav bar -->
         <div class="second-nav">
-            <a href="/">Home</a>
+            <a href="/customerHomePage">Home</a>
             <a href="/customer/shop" >Shopping</a>
             <a href="/customer/service">Service</a>
             <a href="/customer/contactUs">Contact Us</a>

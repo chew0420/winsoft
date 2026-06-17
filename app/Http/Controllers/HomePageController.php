@@ -29,7 +29,7 @@ class HomePageController extends Controller
             $totalUsers = tbl_user::count();
             $totalProducts = tbl_product::count();
             $totalServices = tbl_service_request::count();
-            $totalOrders = tbl_order::count();
+            $totalOrders = tbl_order::whereIn('status', ['pending', 'processing', 'shipped', 'delivered'])->count();
 
             $recentServices = tbl_service_request::orderBy('created_at', 'desc')->limit(5)->get();
             $recentUsers = tbl_user::orderBy('created_at', 'desc')->limit(5)->get();

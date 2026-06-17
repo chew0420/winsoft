@@ -50,6 +50,7 @@ class tbl_page_section extends Model
         
         foreach($products as $product) {
             $html .= '<div class="col-md-3 col-sm-6 mb-4">';
+            $html .= '<a href="/product/'.$product->product_id.'" style="text-decoration: none; color: inherit;">';
             $html .= '<div class="card h-100 product-card">';
             if($product->image) {
                 $html .= '<img src="'.asset($product->image).'" class="card-img-top" alt="'.$product->name.'" style="height:200px; object-fit:cover;">';
@@ -60,9 +61,9 @@ class tbl_page_section extends Model
             $html .= '<h5 class="card-title">'.$product->name.'</h5>';
             $html .= '<p class="card-text text-danger fw-bold">RM '.number_format($product->price, 2).'</p>';
             $html .= '<p class="card-text small">'.substr($product->description, 0, 60).'...</p>';
-            $html .= '<a href="/customer/product/'.$product->product_id.'" class="btn btn-primary btn-sm">View Product</a>';
             $html .= '</div>';
             $html .= '</div>';
+            $html .= '</a>';
             $html .= '</div>';
         }
         

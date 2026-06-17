@@ -13,13 +13,13 @@ class PageController extends Controller
         if(session()->has('LoggedCustomer') || session()->has("LoggedStaff") || session()->has('LoggedTechnician') || session()->has('LoggedSuperadmin'))
         {
             if (session()->has('LoggedCustomer')) {
-                return redirect('customerHomePage');
+                return redirect('/customerHomePage');
             } elseif (session()->has('LoggedStaff')) {
-                return redirect('superAdminHomePage');
+                return redirect('/superAdminHomePage');
             } elseif (session()->has('LoggedTechnician')) {
-                return redirect('technicianHomePage');
+                return redirect('/technicianHomePage');
             } elseif (session()->has('LoggedSuperadmin')) {
-                return redirect('superadminHomePage');
+                return redirect('/superadminHomePage');
             }
         }
         $products = tbl_product::take(4)->get();
