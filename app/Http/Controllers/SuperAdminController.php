@@ -674,6 +674,12 @@ class SuperAdminController extends Controller
         if (!file_exists($directory)) {
             mkdir($directory, 0777, true);
         }
+
+        $oldContent = '';
+
+        if (File::exists($originalFilePath)) {
+            $oldContent = File::get($originalFilePath);
+        }
         
         $updatedContent = $request->input('updatedContent');
         $image = $request->file('images');
@@ -699,8 +705,44 @@ class SuperAdminController extends Controller
         
         // Save the updated content to the original file
         File::put($originalFilePath, $updatedContent);
-        
+
+        // Delete images that were removed/replaced from this page
+        $this->deleteRemovedImages($oldContent, $updatedContent);
+
         return redirect('superadmin/pageList')->with('success', 'Page updated successfully.');
+    }
+
+    private function deleteRemovedImages($oldContent, $newContent){
+        // Find all images inside old content
+        preg_match_all(
+            '#<img[^>]+src=["\'](?:/)?img/([^"\']+)["\']#i',
+            $oldContent,
+            $oldMatches
+        );
+
+        // Find all images inside new content
+        preg_match_all(
+            '#<img[^>]+src=["\'](?:/)?img/([^"\']+)["\']#i',
+            $newContent,
+            $newMatches
+        );
+
+        $oldImages = $oldMatches[1] ?? [];
+        $newImages = $newMatches[1] ?? [];
+
+        // Images that existed before but are no longer used
+        $removedImages = array_diff($oldImages, $newImages);
+
+        foreach ($removedImages as $imageName) {
+
+            $imageName = basename($imageName);
+
+            $imagePath = public_path('img/' . $imageName);
+
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
     }
 
     private function persistBase64Images($content){
