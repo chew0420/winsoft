@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Winsoft Solution</title>
+    <title>Winsoft Solutions</title>
     <link href="/css/customer.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -16,7 +16,7 @@
                 <img src="/img/winsoftlogo.png" alt="Winsoft Logo">
 
                 <div class="customer-brand-text">
-                    <span class="brand-name">Winsoft Solution</span>
+                    <span class="brand-name">Winsoft Solutions</span>
                     <span class="brand-tagline">Your Trusted IT Partner</span>
                 </div>
             </a>

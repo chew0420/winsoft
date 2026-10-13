@@ -4,9 +4,9 @@
 
         <!-- Company Info -->
         <div class="footer-section footer-brand">
-            <img src="/img/winsoftlogo.png" alt="Winsoft Solution Logo">
+            <img src="/img/winsoftlogo.png" alt="Winsoft Solutions Logo">
 
-            <h3>Winsoft Solution</h3>
+            <h3>Winsoft Solutions</h3>
 
             <p>
                 Your trusted IT partner for technology products,
@@ -91,7 +91,7 @@
         <div class="footer-bottom-container">
 
             <p>
-                &copy; {{ date('Y') }} Winsoft Solution Sdn Bhd.
+                &copy; {{ date('Y') }} Winsoft Solutions Sdn Bhd.
                 All rights reserved.
             </p>
 

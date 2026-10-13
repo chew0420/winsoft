@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Winsoft Solution</title>
+    <title>Winsoft Solutions</title>
     <link href="css/visitor.css" rel="stylesheet"/>
 </head>
 <body>
