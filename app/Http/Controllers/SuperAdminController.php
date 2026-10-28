@@ -451,7 +451,7 @@ class SuperAdminController extends Controller
         switch($type) {
             case 'hero':
                 return [
-                    'title' => 'Welcome to Winsoft Solution',
+                    'title' => 'Welcome to Winsoft Solutions',
                     'subtitle' => 'Your Trusted Tech Partner',
                     'image' => 'img/banner.jpg',
                     'button_text' => 'Shop Now',
@@ -460,7 +460,9 @@ class SuperAdminController extends Controller
             case 'products':
                 return ['limit' => 8];
             case 'categories':
-                return [];
+                return [
+                    'limit' => 6
+                ];
             case 'banner':
                 return [
                     'image' => 'img/banner.jpg',
@@ -482,36 +484,172 @@ class SuperAdminController extends Controller
         }
 
         $section = tbl_page_section::find($sectionId);
+
         if(!$section) {
-            return response()->json(['error' => 'Section not found'], 404);
+            return response()->json([
+                'error' => 'Section not found'
+            ], 404);
         }
 
-        $validated = $request->validate([
+        $request->validate([
             'section_type' => 'sometimes|in:hero,products,categories,banner,featured,custom_html',
             'title' => 'nullable|string|max:255',
             'content' => 'nullable|array',
-            'is_active' => 'sometimes|boolean'
+            'is_active' => 'sometimes|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
         ]);
 
-        if(isset($validated['section_type'])) {
-            $section->section_type = $validated['section_type'];
+        /*
+        |--------------------------------------------------------------------------
+        | Basic fields
+        |--------------------------------------------------------------------------
+        */
+
+        if($request->has('section_type')) {
+            $section->section_type = $request->section_type;
         }
-        
-        if(isset($validated['title'])) {
-            $section->title = $validated['title'];
+
+        if($request->has('title')) {
+            $section->title = $request->title;
         }
-        
-        if(isset($validated['content'])) {
-            $section->content = $validated['content'];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Merge old + new content
+        |--------------------------------------------------------------------------
+        */
+
+        $existingContent = $section->content ?? [];
+
+        $newContent = $request->input(
+            'content',
+            []
+        );
+
+        $content = array_merge(
+            $existingContent,
+            $newContent
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Upload Image
+        |--------------------------------------------------------------------------
+        */
+
+        if($request->hasFile('image')) {
+
+            $image = $request->file('image');
+
+            $extension = strtolower(
+                $image->getClientOriginalExtension()
+            );
+
+            $imageName =
+                'section_' .
+                $section->section_id .
+                '_' .
+                date('Ymd_His') .
+                '_' .
+                uniqid() .
+                '.' .
+                $extension;
+
+            $imageDirectory = public_path('img');
+
+            if(!file_exists($imageDirectory)) {
+                mkdir(
+                    $imageDirectory,
+                    0777,
+                    true
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Save new image
+            |--------------------------------------------------------------------------
+            */
+
+            $image->move(
+                $imageDirectory,
+                $imageName
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | Delete previous Page Builder image
+            |--------------------------------------------------------------------------
+            */
+
+            $oldImage =
+                $existingContent['image'] ?? null;
+
+            if($oldImage) {
+
+                $oldImage =
+                    ltrim(
+                        $oldImage,
+                        '/'
+                    );
+
+                if(
+                    str_starts_with(
+                        $oldImage,
+                        'img/'
+                    )
+                    &&
+                    str_starts_with(
+                        basename($oldImage),
+                        'section_'
+                    )
+                ) {
+
+                    $oldImagePath =
+                        public_path(
+                            $oldImage
+                        );
+
+                    if(
+                        file_exists($oldImagePath)
+                        &&
+                        is_file($oldImagePath)
+                    ) {
+                        unlink($oldImagePath);
+                    }
+
+                }
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Put path into content
+            |--------------------------------------------------------------------------
+            */
+
+            $content['image'] =
+                'img/' . $imageName;
         }
-        
-        if(isset($validated['is_active'])) {
-            $section->is_active = $validated['is_active'];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Save
+        |--------------------------------------------------------------------------
+        */
+
+        $section->content = $content;
+
+        if($request->has('is_active')) {
+            $section->is_active =
+                $request->boolean('is_active');
         }
-        
+
         $section->save();
 
-        return response()->json(['success' => 'Section updated successfully!']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Section updated successfully!'
+        ]);
     }
 
     public function reorderSections(Request $request){

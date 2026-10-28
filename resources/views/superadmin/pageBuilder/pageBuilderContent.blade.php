@@ -224,6 +224,53 @@
         .sidebar-form .form-control {
             margin-bottom: 15px;
         }
+
+        .section-type-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+
+            padding: 14px;
+
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .section-type-info-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background: #eef2ff;
+            color: #4f46e5;
+
+            font-size: 18px;
+        }
+
+        .section-type-info strong {
+            display: block;
+
+            color: #1f2937;
+
+            font-size: 14px;
+
+            margin-bottom: 3px;
+        }
+
+        .section-type-info p {
+            color: #6b7280;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -237,39 +284,136 @@
                     <!-- Sidebar -->
                     <div class="col-md-3">
                         <div class="card sidebar-form">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Add Section</h5>
-                            </div>
-                            <div class="card-body">
-                                <form action="{{ url('/superadmin/page/'.$page->page_id.'/addSection') }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label class="form-label">Section Type</label>
-                                        <select name="section_type" class="form-select" required>
-                                            <option value="hero">Hero Banner</option>
-                                            <option value="products">Products Grid</option>
-                                            <option value="categories">Categories</option>
-                                            <option value="banner">Banner</option>
-                                            <option value="featured">Featured Products</option>
-                                            <option value="custom_html">Custom HTML</option>
-                                        </select>
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body">
+
+                                    <div class="mb-4">
+                                        <h5 class="mb-1">
+                                            <i class="bi bi-plus-square me-1"></i>
+                                            Add New Section
+                                        </h5>
+
+                                        <p class="text-muted small mb-0">
+                                            Choose a section type and add it to the page.
+                                        </p>
                                     </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="form-label">Section Title</label>
-                                        <input type="text" name="title" class="form-control" placeholder="Enter section title">
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="bi bi-plus"></i> Add Section
-                                    </button>
-                                </form>
-                                
-                                <hr>
-                                
-                                <a href="{{ url('/superadmin/pageList') }}" class="btn btn-secondary w-100">
-                                    <i class="bi bi-arrow-left"></i> Back to Pages
-                                </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url('/superadmin/page/'.$page->page_id.'/addSection') }}"
+                                        class="sidebar-form"
+                                    >
+                                        @csrf
+
+                                        <input
+                                            type="hidden"
+                                            name="page_id"
+                                            value="{{ $page->page_id }}"
+                                        >
+
+                                        <div class="mb-3">
+
+                                            <label class="form-label fw-semibold">
+                                                Section Type
+                                            </label>
+
+                                            <select
+                                                name="section_type"
+                                                id="sectionTypeSelect"
+                                                class="form-select"
+                                                required
+                                            >
+                                                <option value="">
+                                                    Select Section Type
+                                                </option>
+
+                                                <option value="hero">
+                                                    Hero Banner
+                                                </option>
+
+                                                <option value="products">
+                                                    Products Grid
+                                                </option>
+
+                                                <option value="categories">
+                                                    Categories
+                                                </option>
+
+                                                <option value="banner">
+                                                    Banner
+                                                </option>
+
+                                                <option value="featured">
+                                                    Featured Products
+                                                </option>
+
+                                                <option value="custom_html">
+                                                    Custom HTML
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <div
+                                            id="sectionTypeInfo"
+                                            class="section-type-info d-none"
+                                        >
+
+                                            <div class="section-type-info-icon">
+                                                <i
+                                                    id="sectionTypeIcon"
+                                                    class="bi bi-layout-text-window"
+                                                ></i>
+                                            </div>
+
+                                            <div>
+                                                <strong id="sectionTypeName">
+                                                    Section
+                                                </strong>
+
+                                                <p
+                                                    id="sectionTypeDescription"
+                                                    class="mb-0"
+                                                >
+                                                </p>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="mb-3 mt-3">
+
+                                            <label class="form-label fw-semibold">
+                                                Section Title
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="title"
+                                                class="form-control"
+                                                placeholder="Optional section title"
+                                            >
+
+                                            <small class="text-muted">
+                                                Used to identify this section inside the builder.
+                                            </small>
+
+                                        </div>
+
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary w-100"
+                                        >
+                                            <i class="bi bi-plus-lg me-1"></i>
+                                            Add Section
+                                        </button>
+
+                                    </form>
+
+                                </div>
                             </div>
                         </div>
                         
@@ -483,6 +627,89 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+
+    var sectionTypeData = {
+
+        hero: {
+            name: 'Hero Banner',
+            icon: 'bi-image',
+            description:
+                'Large introduction section with title, subtitle and call-to-action button.'
+        },
+
+        products: {
+            name: 'Products Grid',
+            icon: 'bi-grid',
+            description:
+                'Automatically displays products from the product database.'
+        },
+
+        categories: {
+            name: 'Categories',
+            icon: 'bi-tags',
+            description:
+                'Displays available product categories for visitors.'
+        },
+
+        banner: {
+            name: 'Banner',
+            icon: 'bi-card-image',
+            description:
+                'Displays a promotional or informational banner.'
+        },
+
+        featured: {
+            name: 'Featured Products',
+            icon: 'bi-star',
+            description:
+                'Manually choose specific products to highlight.'
+        },
+
+        custom_html: {
+            name: 'Custom HTML',
+            icon: 'bi-code-slash',
+            description:
+                'Add your own custom HTML content to the page.'
+        }
+
+    };
+
+
+    $('#sectionTypeSelect').on('change', function() {
+
+        var selectedType = $(this).val();
+
+        var infoBox =
+            $('#sectionTypeInfo');
+
+        if (
+            !selectedType ||
+            !sectionTypeData[selectedType]
+        ) {
+
+            infoBox.addClass('d-none');
+
+            return;
+        }
+
+        var data =
+            sectionTypeData[selectedType];
+
+        $('#sectionTypeName')
+            .text(data.name);
+
+        $('#sectionTypeDescription')
+            .text(data.description);
+
+        $('#sectionTypeIcon')
+            .attr(
+                'class',
+                'bi ' + data.icon
+            );
+
+        infoBox.removeClass('d-none');
+
+    });
 
     $(document).ready(function() {
 

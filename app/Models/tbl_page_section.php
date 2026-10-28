@@ -75,36 +75,67 @@ class tbl_page_section extends Model
     }
 
     private function renderCategoriesSection(){
-        $categories = \App\Models\tbl_category::where('status', 'active')->get();
+        $content = $this->content ?? [];
+
+        // Get category limit from section settings
+        $limit = (int) ($content['limit'] ?? 6);
+
+        // Keep limit between 1 and 20
+        $limit = max(1, min($limit, 20));
+
+        $categories = \App\Models\tbl_category::where('status', 'active')
+            ->limit($limit)
+            ->get();
 
         $html = '<div class="section-wrapper section-categories" data-section-id="'.$this->section_id.'">';
+
         $html .= '<div class="container">';
-        $html .= '<h2 class="mb-4">'.($this->title ?? 'Shop By Categories').'</h2>';
+
+        $html .= '<h2 class="mb-4">'
+            .($this->title ?? 'Shop By Categories').
+            '</h2>';
+
         $html .= '<div class="row">';
-        
+
         foreach($categories as $category) {
+
             $html .= '<div class="col-md-3 col-sm-6 mb-4">';
+
             $html .= '<div class="card category-card text-center">';
+
             $html .= '<div class="card-body">';
+
             $html .= '<div class="category-icon" style="font-size: 48px;">📁</div>';
-            $html .= '<a href="/shop?category='.urlencode($category->name).'" class="text-decoration-none">';
-            $html .= '<h5 class="card-title mt-2">'.$category->name.'</h5>';
+
+            $html .= '<a href="/shop?category='
+                .urlencode($category->name).
+                '" class="text-decoration-none">';
+
+            $html .= '<h5 class="card-title mt-2">'
+                .$category->name.
+                '</h5>';
+
             $html .= '</a>';
+
             $html .= '</div>';
+
             $html .= '</div>';
+
             $html .= '</div>';
         }
-        
+
         $html .= '</div>';
+
         $html .= '</div>';
+
         $html .= '</div>';
-        
+
         return $html;
     }
 
     private function renderHeroSection(){
         $content = $this->content ?? [];
-        $title = $content['title'] ?? 'Welcome to Winsoft Solution';
+        $title = $content['title'] ?? 'Welcome to Winsoft Solutions';
         $subtitle = $content['subtitle'] ?? 'Your Trusted Tech Partner';
         $image = $content['image'] ?? 'img/banner.jpg';
         $button_text = $content['button_text'] ?? 'Shop Now';
