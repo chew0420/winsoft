@@ -682,21 +682,6 @@ class SuperAdminController extends Controller
         }
         
         $updatedContent = $request->input('updatedContent');
-        $image = $request->file('images');
-        
-        if ($image){
-            $extension = strtolower($image->getClientOriginalExtension());
-            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-            $originalName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
-            $imageName = $originalName . '_' . date('Ymd_His') . '.' . $extension;
-            $image->move(public_path('img'), $imageName);
-
-            // Get the file path for the saved image
-            $savedImagePath = 'img/' . $imageName;
-            // Remove old src and add new one
-            $pattern = '/<img([^>]*?)src=["\'].*?["\']([^>]*?)>/';
-            $updatedContent = preg_replace($pattern, '<img$1 src="/'.$savedImagePath.'"$2>', $updatedContent);
-        }
 
         // Decode and persist data:image/*;base64 images into public/img/
         $updatedContent = $this->persistBase64Images($updatedContent);
@@ -745,67 +730,149 @@ class SuperAdminController extends Controller
         }
     }
 
-    private function persistBase64Images($content){
-        // Replace <img src="data:image/{mime};base64,{data}"> with saved files in public/img
-        $pattern = '/<img([^>]*?)src=["\'](data:image\/(png|jpe?g|gif|webp);base64,([^"\']+))["\']([^>]*?)>/i';
+    private function persistBase64Images($html){
+        $pattern = '/<img([^>]*?)src=["\'](data:image\/(png|jpeg|jpg|gif|webp);base64,([^"\']+))["\']([^>]*)>/i';
 
-        return preg_replace_callback($pattern, function($matches){
-            $beforeSrcAttrs = $matches[1] ?? '';
-            $mime = strtolower($matches[3] ?? 'jpeg');
-            $base64 = $matches[4] ?? '';
+        $html = preg_replace_callback($pattern, function ($matches) {
 
-            // Guard: base64 may include whitespace/newlines
-            $base64 = preg_replace('/\s+/', '', $base64);
+            $beforeSrc = $matches[1];
+            $fullBase64 = $matches[2];
+            $extension = strtolower($matches[3]);
+            $base64Data = $matches[4];
+            $afterSrc = $matches[5];
 
-            $afterAttrs = $matches[5] ?? '';
-
-            if(!$base64) {
-                return '<img'.$beforeSrcAttrs.' src=""'.$afterAttrs.'>';
+            if ($extension === 'jpeg') {
+                $extension = 'jpg';
             }
 
-            $extension = match($mime){
-                'png' => 'png',
-                'jpg' => 'jpg',
-                'jpeg' => 'jpeg',
-                'gif' => 'gif',
-                'webp' => 'webp',
-                default => 'jpeg'
-            };
+            /*
+            |--------------------------------------------------------------------------
+            | 1. Find old image path from data-old-src
+            |--------------------------------------------------------------------------
+            */
 
-            $binary = base64_decode($base64, true);
-            if($binary === false) {
-                return '<img'.$beforeSrcAttrs.' src="'.$matches[2].'"'.$afterAttrs.'>';
+            $oldSrc = null;
+
+            $fullAttributes = $beforeSrc . $afterSrc;
+
+            if (
+                preg_match(
+                    '/data-old-src=["\']([^"\']+)["\']/i',
+                    $fullAttributes,
+                    $oldMatch
+                )
+            ) {
+                $oldSrc = $oldMatch[1];
             }
 
-            $filenameBase = 'editor';
-            $oldSrcForName = $matches[2] ?? '';
+            /*
+            |--------------------------------------------------------------------------
+            | 2. Decode new base64 image
+            |--------------------------------------------------------------------------
+            */
 
-            if (is_string($oldSrcForName) && preg_match('#/img/([^/\\"\']+?)(?:\.[A-Za-z0-9]+)?$#', $oldSrcForName, $mOld)) {
-                $filenameBase = pathinfo($mOld[1], PATHINFO_FILENAME);
-            } elseif (preg_match('/alt=["\']([^"\']*)["\']/i', $beforeSrcAttrs, $mAlt) && !empty(trim($mAlt[1] ?? ''))) {
-                $filenameBase = pathinfo($mAlt[1], PATHINFO_FILENAME);
+            $decodedImage = base64_decode($base64Data);
+
+            if ($decodedImage === false) {
+                return $matches[0];
             }
 
-            // Sanitize
-            $filenameBase = preg_replace('/[^A-Za-z0-9\-]/', '_', $filenameBase);
+            /*
+            |--------------------------------------------------------------------------
+            | 3. Create new image filename
+            |--------------------------------------------------------------------------
+            */
 
-            $filename = $filenameBase . '_' . date('Ymd_His') . '.' . $extension;
+            $filename =
+                'editor_' .
+                date('Ymd_His') .
+                '_' .
+                uniqid() .
+                '.' .
+                $extension;
 
-            $targetPath = public_path('img/' . $filename);
+            $relativePath = 'img/' . $filename;
 
-            if (is_string($oldSrcForName) && preg_match('#/img/([^/\\"\']+?\.[A-Za-z0-9]+)$#', $oldSrcForName, $mOldFile)) {
-                $oldFile = public_path('img/' . $mOldFile[1]);
-                if (file_exists($oldFile)) {
-                    @unlink($oldFile);
+            $fullPath = public_path($relativePath);
+
+            /*
+            |--------------------------------------------------------------------------
+            | 4. Save new image first
+            |--------------------------------------------------------------------------
+            */
+
+            file_put_contents($fullPath, $decodedImage);
+
+            /*
+            |--------------------------------------------------------------------------
+            | 5. Delete old image if it exists
+            |--------------------------------------------------------------------------
+            */
+
+            if ($oldSrc) {
+
+                // If old src is full URL:
+                // http://127.0.0.1:8000/img/xxx.jpg
+                $parsedPath = parse_url($oldSrc, PHP_URL_PATH);
+
+                if ($parsedPath) {
+                    $oldSrc = $parsedPath;
+                }
+
+                // Remove leading slash
+                $oldSrc = ltrim($oldSrc, '/');
+
+                /*
+                | Only delete files inside public/img
+                | This avoids deleting external files or unrelated assets.
+                */
+                if (str_starts_with($oldSrc, 'img/')) {
+
+                    $oldFullPath = public_path($oldSrc);
+
+                    if (
+                        file_exists($oldFullPath) &&
+                        is_file($oldFullPath)
+                    ) {
+                        @unlink($oldFullPath);
+                    }
                 }
             }
 
-            file_put_contents($targetPath, $binary);
+            /*
+            |--------------------------------------------------------------------------
+            | 6. Remove data-old-src from final HTML
+            |--------------------------------------------------------------------------
+            */
 
-            $savedSrc = '/img/' . $filename;
+            $beforeSrc = preg_replace(
+                '/\s*data-old-src=["\'][^"\']*["\']/i',
+                '',
+                $beforeSrc
+            );
 
-            return '<img'.$beforeSrcAttrs.' src="'.$savedSrc.'"'.$afterAttrs.'>';
-        }, $content);
+            $afterSrc = preg_replace(
+                '/\s*data-old-src=["\'][^"\']*["\']/i',
+                '',
+                $afterSrc
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | 7. Return clean img tag
+            |--------------------------------------------------------------------------
+            */
+
+            return '<img'
+                . $beforeSrc
+                . 'src="/'
+                . $relativePath
+                . '"'
+                . $afterSrc
+                . '>';
+        }, $html);
+
+        return $html;
     }
 
     private function removeContentEditable($content){

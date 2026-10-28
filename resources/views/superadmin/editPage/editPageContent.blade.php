@@ -70,7 +70,6 @@
 
             fileInput = document.createElement('input');
             fileInput.setAttribute('type', 'file');
-            fileInput.setAttribute('name', 'images');
             fileInput.setAttribute('accept', 'image/*');
             fileInput.style.display = 'none';
             form.appendChild(fileInput);
@@ -86,10 +85,21 @@
                     }
                     
                     var reader = new FileReader();
+
                     reader.onload = function(e) {
-                        // Update ONLY the clicked image
+
+                        // Save the original image path before replacing it
+                        if (!clickedImage.getAttribute('data-old-src')) {
+                            clickedImage.setAttribute(
+                                'data-old-src',
+                                clickedImage.getAttribute('src')
+                            );
+                        }
+
+                        // Preview the newly selected image
                         clickedImage.src = e.target.result;
                     };
+
                     reader.readAsDataURL(file);
                 }
                 
