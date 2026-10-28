@@ -393,10 +393,18 @@ class SuperAdminController extends Controller
         if(!$page) {
             return redirect('/superadmin/pageList')->with('error', 'Page not found');
         }
-        if($page->page_name == 'Visitor Home Page'){
-            $sections = tbl_page_section::where('page_id', $id)->orderBy('order')->get();
+        if($page->page_name == 'Visitor Home Page'||$page->page_name == 'Customer Home Page') {
+            $sections = tbl_page_section::where('page_id', $id)
+                ->orderBy('order')
+                ->get();
 
-            return view('superadmin.pageBuilder.pageBuilder', ['page' => $page,'sections' => $sections]);
+            return view(
+                'superadmin.pageBuilder.pageBuilder',
+                [
+                    'page' => $page,
+                    'sections' => $sections
+                ]
+            );
         }else{
             $filePath = $page->file_path;
             if(!view()->exists($filePath)) {

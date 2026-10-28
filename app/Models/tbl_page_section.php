@@ -19,26 +19,35 @@ class tbl_page_section extends Model
         return $this->belongsTo(tbl_website_page::class, 'page_id', 'page_id');
     }
 
-    public function render(){
+    public function render($userType = 'visitor'){
         switch($this->section_type) {
+
             case 'products':
-                return $this->renderProductsSection();
+                return $this->renderProductsSection($userType);
+
             case 'categories':
-                return $this->renderCategoriesSection();
+                return $this->renderCategoriesSection($userType);
+
             case 'hero':
-                return $this->renderHeroSection();
+                return $this->renderHeroSection($userType);
+
             case 'banner':
-                return $this->renderBannerSection();
+                return $this->renderBannerSection($userType);
+
             case 'featured':
-                return $this->renderFeaturedSection();
+                return $this->renderFeaturedSection($userType);
+
             case 'custom_html':
                 return $this->renderCustomHtmlSection();
+
             default:
-                return '<div class="alert alert-warning">Unknown section type: ' . $this->section_type . '</div>';
+                return '<div class="alert alert-warning">Unknown section type: '
+                    . $this->section_type .
+                    '</div>';
         }
     }
 
-    private function renderProductsSection(){
+    private function renderProductsSection($userType = 'visitor'){
         $content = $this->content ?? [];
         $limit = $content['limit'] ?? 8;
         $products = \App\Models\tbl_product::where('status', 'active')->limit($limit)->get();
@@ -49,8 +58,13 @@ class tbl_page_section extends Model
         $html .= '<div class="row">';
         
         foreach($products as $product) {
+            if($userType === 'customer') {
+                $productUrl = '/customer/product/' . $product->product_id;
+            } else {
+                $productUrl = '/product/' . $product->product_id;
+            }
             $html .= '<div class="col-md-3 col-sm-6 mb-4">';
-            $html .= '<a href="/product/'.$product->product_id.'" style="text-decoration: none; color: inherit;">';
+            $html .= '<a href="'.$productUrl.'" style="text-decoration: none; color: inherit;">';
             $html .= '<div class="card h-100 product-card">';
             if($product->image) {
                 $html .= '<img src="'.asset($product->image).'" class="card-img-top" alt="'.$product->name.'" style="height:200px; object-fit:cover;">';
@@ -60,7 +74,7 @@ class tbl_page_section extends Model
             $html .= '<div class="card-body text-center">';
             $html .= '<h5 class="card-title">'.$product->name.'</h5>';
             $html .= '<p class="card-text text-danger fw-bold">RM '.number_format($product->price, 2).'</p>';
-            $html .= '<p class="card-text small">'.substr($product->description, 0, 60).'...</p>';
+            $html .= '<p class="card-text small">'.substr($product->description ?? '', 0, 60).'...</p>';
             $html .= '</div>';
             $html .= '</div>';
             $html .= '</a>';
@@ -74,7 +88,7 @@ class tbl_page_section extends Model
         return $html;
     }
 
-    private function renderCategoriesSection(){
+    private function renderCategoriesSection($userType = 'visitor'){
         $content = $this->content ?? [];
 
         // Get category limit from section settings
@@ -98,6 +112,11 @@ class tbl_page_section extends Model
         $html .= '<div class="row">';
 
         foreach($categories as $category) {
+            if($userType === 'customer') {
+                $categoryUrl = '/customer/shop?category=' . urlencode($category->name);
+            } else {
+                $categoryUrl = '/shop?category=' . urlencode($category->name);
+            }
 
             $html .= '<div class="col-md-3 col-sm-6 mb-4">';
 
@@ -107,9 +126,7 @@ class tbl_page_section extends Model
 
             $html .= '<div class="category-icon" style="font-size: 48px;">📁</div>';
 
-            $html .= '<a href="/shop?category='
-                .urlencode($category->name).
-                '" class="text-decoration-none">';
+            $html .= '<a href="'.$categoryUrl.'" class="text-decoration-none">';
 
             $html .= '<h5 class="card-title mt-2">'
                 .$category->name.
@@ -133,13 +150,20 @@ class tbl_page_section extends Model
         return $html;
     }
 
-    private function renderHeroSection(){
+    private function renderHeroSection($userType = 'visitor'){
         $content = $this->content ?? [];
         $title = $content['title'] ?? 'Welcome to Winsoft Solutions';
         $subtitle = $content['subtitle'] ?? 'Your Trusted Tech Partner';
         $image = $content['image'] ?? 'img/banner.jpg';
         $button_text = $content['button_text'] ?? 'Shop Now';
         $button_url = $content['button_url'] ?? '/shop';
+        if(
+            $userType === 'customer'
+            &&
+            $button_url === '/shop'
+        ) {
+            $button_url = '/customer/shop';
+        }
 
         $html = '<div class="section-wrapper section-hero" data-section-id="'.$this->section_id.'">';
         $html .= '<div class="hero-banner" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(\''.asset($image).'\'); background-size: cover; background-position: center; padding: 100px 0; text-align: center; color: white;">';
@@ -156,10 +180,17 @@ class tbl_page_section extends Model
         return $html;
     }
 
-    private function renderBannerSection(){
+    private function renderBannerSection($userType = 'visitor'){
         $content = $this->content ?? [];
         $image = $content['image'] ?? 'img/banner.jpg';
         $link = $content['link'] ?? '#';
+        if(
+            $userType === 'customer'
+            &&
+            $link === '/shop'
+        ) {
+            $link = '/customer/shop';
+        }
         $alt = $content['alt'] ?? 'Banner';
 
         $html = '<div class="section-wrapper section-banner" data-section-id="'.$this->section_id.'">';
@@ -173,7 +204,7 @@ class tbl_page_section extends Model
         return $html;
     }
 
-    private function renderFeaturedSection(){
+    private function renderFeaturedSection($userType = 'visitor'){
         $content = $this->content ?? [];
         $product_ids = $content['product_ids'] ?? [];
         $products = \App\Models\tbl_product::whereIn('product_id', $product_ids)
@@ -186,7 +217,13 @@ class tbl_page_section extends Model
         $html .= '<div class="row">';
         
         foreach($products as $product) {
+            if($userType === 'customer') {
+                $productUrl = '/customer/product/' . $product->product_id;
+            } else {
+                $productUrl = '/product/' . $product->product_id;
+            }
             $html .= '<div class="col-md-3 col-sm-6 mb-4">';
+            $html .= '<a href="'.$productUrl.'" style="text-decoration:none; color:inherit;">';
             $html .= '<div class="card h-100 product-card">';
             if($product->image) {
                 $html .= '<img src="'.asset($product->image).'" class="card-img-top" alt="'.$product->name.'" style="height:200px; object-fit:cover;">';
@@ -202,6 +239,7 @@ class tbl_page_section extends Model
         
         $html .= '</div>';
         $html .= '</div>';
+        $html .= '</a>';
         $html .= '</div>';
         
         return $html;
