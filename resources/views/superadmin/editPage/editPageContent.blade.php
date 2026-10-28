@@ -44,7 +44,17 @@
                     {!! $editableContent !!}
                 </div>
                 <p class="text-muted mt-2">💡 Click on any text to edit. Click on any image to replace it.</p>
-                <button type="submit" class="btn btn-primary mt-3" onclick="return confirm('Are you sure you want to Save Changes?')">Save Changes</button>
+                <div class="d-flex gap-2 mt-3">
+
+                    <button type="button" class="btn btn-outline-secondary" onclick="resetChanges()"> <i class="bi bi-arrow-counterclockwise"></i>
+                        Reset Changes
+                    </button>
+
+                    <button type="submit" class="btn btn-primary"> <i class="bi bi-save"></i>
+                        Save Changes
+                    </button>
+
+                </div>
             </form>
         </div>
     </div>
@@ -53,6 +63,8 @@
     var form = document.getElementById('editForm');
     var editContainer = document.getElementById('editContainer');
     var fileInput = null;
+    var originalContent = editContainer.innerHTML;
+    var isSubmitting = false;
 
     // Handle image clicks for upload
     editContainer.addEventListener('click', function(event) {
@@ -113,16 +125,61 @@
     // Handle form submission
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        
+
         var updatedContent = editContainer.innerHTML;
-        
+
+        // No changes detected
+        if (updatedContent === originalContent) {
+            alert('No changes detected.');
+            return;
+        }
+
+        // Ask confirmation before saving
+        if (!confirm('Are you sure you want to save these changes?')) {
+            return;
+        }
+
+        isSubmitting = true;
+
+        // Remove old hidden input if it already exists
+        var existingInput = form.querySelector(
+            'input[name="updatedContent"]'
+        );
+
+        if (existingInput) {
+            existingInput.remove();
+        }
+
         var updatedContentInput = document.createElement('input');
+
         updatedContentInput.setAttribute('type', 'hidden');
         updatedContentInput.setAttribute('name', 'updatedContent');
         updatedContentInput.value = updatedContent;
+
         form.appendChild(updatedContentInput);
-        
+
         form.submit();
+    });
+
+    function resetChanges() {
+        if (editContainer.innerHTML === originalContent) {
+            alert('No changes to reset.');
+            return;
+        }
+
+        if (confirm('Are you sure you want to reset all unsaved changes?')) {
+            editContainer.innerHTML = originalContent;
+        }
+    }
+
+    window.addEventListener('beforeunload', function(event) {
+        if (
+            !isSubmitting &&
+            editContainer.innerHTML !== originalContent
+        ) {
+            event.preventDefault();
+            event.returnValue = '';
+        }
     });
 </script>
     
