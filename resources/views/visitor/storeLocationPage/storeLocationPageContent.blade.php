@@ -15,7 +15,7 @@
         <div class="stores-grid">
             <!-- store HQ -->
             <div class="store-card">
-                <img src="/img/editor_20261028_130825_6ae18349a0676.jpg" alt="Winsoft Solution HQ" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+HQ'">
+                <img src="/img/editor_20261028_133452_6ae1897cb1cfd.jpg" alt="Winsoft Solution HQ" class="store-image" onerror="this.src='https://placehold.co/600x400/f0f0f0/333?text=Winsoft+HQ'">
                 <div class="store-info">
                     <h2 class="store-name">Winsoft Solution (HQ)</h2>
                     <div class="store-address">
