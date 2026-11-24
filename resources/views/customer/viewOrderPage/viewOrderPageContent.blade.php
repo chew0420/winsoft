@@ -46,6 +46,14 @@
                             <span>Orders and purchases</span>
                         </div>
                     </a>
+
+                    <a href="{{ url('/customer/serviceRequests') }}">
+                        <span class="account-menu-icon"><i class="fas fa-screwdriver-wrench"></i></span>
+                        <div>
+                            <strong>Service Requests</strong>
+                            <span>Repair and support</span>
+                        </div>
+                    </a>
                 </nav>
             </aside>
 

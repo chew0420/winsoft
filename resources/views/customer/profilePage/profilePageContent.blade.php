@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winsoft Solution</title>
+    <title>Winsoft Solutions</title>
     <link href="/css/customer.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -112,51 +112,46 @@
 
 
                 <nav class="account-menu">
-
                     <a
                         href="{{ url('/customer/profile') }}"
                         class="active"
                     >
-
                         <span class="account-menu-icon">
                             <i class="fas fa-user"></i>
                         </span>
-
                         <div>
-
                             <strong>
                                 My Account
                             </strong>
-
                             <span>
                                 Personal information
                             </span>
-
                         </div>
-
                     </a>
 
 
                     <a
                         href="{{ url('/customer/order') }}"
                     >
-
                         <span class="account-menu-icon">
                             <i class="fas fa-shopping-bag"></i>
                         </span>
-
                         <div>
-
                             <strong>
                                 My Purchase
                             </strong>
-
                             <span>
                                 Orders and purchases
                             </span>
-
                         </div>
+                    </a>
 
+                    <a href="{{ url('/customer/serviceRequests') }}">
+                        <span class="account-menu-icon"><i class="fas fa-screwdriver-wrench"></i></span>
+                        <div>
+                            <strong>Service Requests</strong>
+                            <span>Repair and support</span>
+                        </div>
                     </a>
 
                 </nav>

@@ -32,6 +32,8 @@ Route::post('/visitorAddCart', [VisitorController::class, 'redirectlogin'])->nam
 Route::get('/customer/shop',[CustomerController::class,'shop']);
 Route::get('/customer/service',[CustomerController::class,'bookService'])->name('customer.book.service');
 Route::post('/customer/service',[CustomerController::class, 'storeService']); 
+Route::get('/customer/serviceRequests', [CustomerController::class, 'serviceRequests'])->name('customer.serviceRequests');
+Route::post('/customer/serviceRequests/cancel/{id}', [CustomerController::class, 'cancelServiceRequest'])->name('customer.cancelServiceRequest');
 Route::get('/customer/contactUs', [CustomerController::class, 'contactUs']);
 Route::get('/customer/storeLocation', [CustomerController::class, 'storeLocation']);
 Route::get('/customer/product/{id}', [CustomerController::class, 'productDetail'])->name('product.detail');

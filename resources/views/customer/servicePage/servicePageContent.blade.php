@@ -276,8 +276,10 @@
 <div id="success-dialog" class="service-success-overlay">
     <div class="service-success-modal">
         <div class="service-success-icon"><i class="fas fa-check"></i></div>
+
         <span>Request Submitted</span>
         <h2>Service Request Received</h2>
+
         <p>Your request has been submitted successfully. Our technician will contact you to confirm the appointment details.</p>
 
         <div class="service-request-id">
@@ -285,7 +287,15 @@
             <strong>#{{ $requestId }}</strong>
         </div>
 
-        <button type="button" onclick="closePopupAndRedirect()">Done</button>
+        <div class="service-success-actions">
+            <a href="{{ url('/customerHomePage') }}" class="service-success-home-btn">
+                Back to Home
+            </a>
+
+            <a href="{{ url('/customer/serviceRequests') }}" class="service-success-request-btn">
+                View My Request →
+            </a>
+        </div>
     </div>
 </div>
 @endif
@@ -337,11 +347,6 @@
     });
 
     updateServiceOption();
-
-    function closePopupAndRedirect() {
-        document.getElementById('success-dialog').style.display = 'none';
-        window.location.href = '{{ url("/customerHomePage") }}';
-    }
 
     if(window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);

@@ -101,6 +101,66 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function serviceRequests(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $status = $request->get('status', 'all');
+
+        $query = tbl_service_request::where('customer_id', $customer->user_id)->with('technician');
+
+        if($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $serviceRequests = $query->orderBy('created_at', 'desc')->paginate(8);
+
+        $counts = [
+            'pending' => tbl_service_request::where('customer_id', $customer->user_id)->where('status', 'pending')->count(),
+            'confirmed' => tbl_service_request::where('customer_id', $customer->user_id)->where('status', 'confirmed')->count(),
+            'in-progress' => tbl_service_request::where('customer_id', $customer->user_id)->where('status', 'in-progress')->count(),
+            'completed' => tbl_service_request::where('customer_id', $customer->user_id)->where('status', 'completed')->count(),
+            'cancelled' => tbl_service_request::where('customer_id', $customer->user_id)->where('status', 'cancelled')->count()
+        ];
+
+        return view('customer.serviceRequestPage.serviceRequestPage', [
+            'customer' => $customer,
+            'serviceRequests' => $serviceRequests,
+            'current_status' => $status,
+            'counts' => $counts
+        ]);
+    }
+
+    public function cancelServiceRequest($id){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customerEmail = session()->get('LoggedCustomer');
+        $customer = tbl_user::where('email', $customerEmail)->first();
+
+        $service = tbl_service_request::where('request_id', $id)
+            ->where('customer_id', $customer->user_id)
+            ->first();
+
+        if(!$service) {
+            return redirect()->back()->with('error', 'Service request not found.');
+        }
+
+        if($service->status !== 'pending') {
+            return redirect()->back()->with('error', 'Only pending service requests can be cancelled.');
+        }
+
+        $service->status = 'cancelled';
+        $service->save();
+
+        return redirect()->back()->with('success', 'Service request cancelled successfully.');
+    }
+
     public function contactUs(){
         $customerEmail = session()->get('LoggedCustomer');
         $customer = tbl_user::where('email', $customerEmail)->first();
