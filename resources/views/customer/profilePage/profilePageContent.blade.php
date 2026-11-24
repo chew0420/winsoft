@@ -8,124 +8,571 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    @if(session()->has('success'))
-        <div class="flash-message flash-success">
-            <i class="fas fa-check-circle"></i> {{ session()->get('success') }}
-        </div>
-        <script>
-            setTimeout(function() {
-                let msg = document.querySelector('.flash-message');
-                if(msg) msg.style.display = 'none';
-            }, 3000);
-        </script>
-    @elseif(session()->has('error'))
-        <div class="flash-message flash-error">
-            <i class="fas fa-exclamation-circle"></i> {{ session()->get('error') }}
-        </div>
-        <script>
-            setTimeout(function() {
-                let msg = document.querySelector('.flash-message');
-                if(msg) msg.style.display = 'none';
-            }, 3000);
-        </script>
-    @endif
+{{-- =====================================================
+     FLASH MESSAGE
+===================================================== --}}
 
-    <div class="profile-wrapper">
-        <!-- Sidebar -->
-        <div class="profile-sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-avatar">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <h3>{{ $customer->name }}</h3>
-                <p>{{ $customer->email }}</p>
-            </div>
-            <div class="sidebar-menu">
-                <a href="{{ url('/customer/profile') }}" class="active">
-                    <i class="fas fa-user"></i> My Account
-                </a>
-                <a href="{{ url('/customer/order') }}">
-                    <i class="fas fa-shopping-bag"></i> My Purchase
-                </a>
-            </div>
-        </div>
+@if(session()->has('success'))
 
-        <div class="profile-content">
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <h2 id="displayName">{{ $customer->name }}</h2>
-                    <p>Member since {{ date('F Y', strtotime($customer->created_at)) }}</p>
-                </div>
+    <div class="profile-toast profile-toast-success">
 
-                <div class="profile-body">
-                    <div id="viewMode">
-                        <div class="info-group">
-                            <div class="info-label">Full Name:</div>
-                            <div class="info-value" id="viewName">{{ $customer->name }}</div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label">Email Address:</div>
-                            <div class="info-value" id="viewEmail">{{ $customer->email }}</div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label">Phone Number:</div>
-                            <div class="info-value" id="viewPhone">{{ $customer->phone_number ?: 'Not provided' }}</div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-label">Address:</div>
-                            <div class="info-value" id="viewAddress">{{ $customer->address ?: 'Not provided' }}</div>
-                        </div>
-                        <div style="text-align: center; margin-top: 20px;">
-                            <button class="edit-btn" onclick="showEditForm()">
-                                <i class="fas fa-edit"></i> Edit Profile
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Edit Mode -->
-                    <div id="editMode" class="edit-form">
-                        <form method="post" action="{{ url('/customer/profile/update') }}">
-                            @csrf
-                            <label>Full Name:</label>
-                            <input type="text" name="name" value="{{ $customer->name }}" required>
-                            
-                            <label>Email Address:</label>
-                            <input type="email" name="email" value="{{ $customer->email }}" required>
-                            
-                            <label>Phone Number:</label>
-                            <input type="text" name="phone_number" value="{{ $customer->phone_number }}">
-                            
-                            <label>Address:</label>
-                            <textarea name="address" rows="3">{{ $customer->address }}</textarea>
-                            
-                            <div style="text-align: center;">
-                                <button type="submit" class="save-btn">
-                                    <i class="fas fa-save"></i> Save Changes
-                                </button>
-                                <button type="button" class="cancel-btn" onclick="hideEditForm()">
-                                    <i class="fas fa-times"></i> Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+        <span class="profile-toast-icon">
+            ✓
+        </span>
+
+        <span>
+            {{ session()->get('success') }}
+        </span>
+
     </div>
-    <script>
-        function showEditForm() {
-            document.getElementById('viewMode').style.display = 'none';
-            document.getElementById('editMode').style.display = 'block';
-        }
-        
-        function hideEditForm() {
-            document.getElementById('viewMode').style.display = 'block';
-            document.getElementById('editMode').style.display = 'none';
-        }
-    </script>
+
+@elseif(session()->has('error'))
+
+    <div class="profile-toast profile-toast-error">
+
+        <span class="profile-toast-icon">
+            !
+        </span>
+
+        <span>
+            {{ session()->get('error') }}
+        </span>
+
+    </div>
+
+@endif
+
+
+
+<div class="account-page">
+
+    <div class="account-container">
+
+
+        {{-- =====================================================
+             PAGE HEADER
+        ===================================================== --}}
+
+        <div class="account-page-header">
+
+            <div>
+
+                <span class="account-eyebrow">
+                    Account
+                </span>
+
+                <h1>
+                    My Profile
+                </h1>
+
+                <p>
+                    Manage your personal information
+                    and delivery details.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="account-layout">
+
+
+            {{-- =================================================
+                 SIDEBAR
+            ================================================== --}}
+
+            <aside class="account-sidebar">
+
+
+                <div class="account-user-card">
+
+                    <div class="account-avatar">
+
+                        <i class="fas fa-user"></i>
+
+                    </div>
+
+
+                    <div class="account-user-info">
+
+                        <strong>
+                            {{ $customer->name }}
+                        </strong>
+
+                        <span>
+                            {{ $customer->email }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <nav class="account-menu">
+
+                    <a
+                        href="{{ url('/customer/profile') }}"
+                        class="active"
+                    >
+
+                        <span class="account-menu-icon">
+                            <i class="fas fa-user"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                My Account
+                            </strong>
+
+                            <span>
+                                Personal information
+                            </span>
+
+                        </div>
+
+                    </a>
+
+
+                    <a
+                        href="{{ url('/customer/order') }}"
+                    >
+
+                        <span class="account-menu-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                My Purchase
+                            </strong>
+
+                            <span>
+                                Orders and purchases
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                </nav>
+
+            </aside>
+
+
+
+            {{-- =================================================
+                 MAIN CONTENT
+            ================================================== --}}
+
+            <main class="account-content">
+
+
+                <section class="profile-main-card">
+
+
+                    {{-- =========================================
+                         HEADER
+                    ========================================== --}}
+
+                    <div class="profile-card-header">
+
+                        <div>
+
+                            <span class="profile-card-label">
+                                Profile Information
+                            </span>
+
+                            <h2>
+                                Personal Details
+                            </h2>
+
+                            <p>
+                                Member since
+                                {{ date('F Y', strtotime($customer->created_at)) }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="profile-mini-avatar">
+
+                            <i class="fas fa-user"></i>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =========================================
+                         VIEW MODE
+                    ========================================== --}}
+
+                    <div
+                        id="viewMode"
+                        class="profile-view-mode"
+                    >
+
+
+                        <div class="profile-info-grid">
+
+
+                            {{-- NAME --}}
+
+                            <div class="profile-info-item">
+
+                                <div class="profile-info-icon">
+
+                                    <i class="fas fa-user"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span class="profile-info-label">
+                                        Full Name
+                                    </span>
+
+                                    <strong id="viewName">
+                                        {{ $customer->name }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+
+                            {{-- EMAIL --}}
+
+                            <div class="profile-info-item">
+
+                                <div class="profile-info-icon">
+
+                                    <i class="fas fa-envelope"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span class="profile-info-label">
+                                        Email Address
+                                    </span>
+
+                                    <strong id="viewEmail">
+                                        {{ $customer->email }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+
+                            {{-- PHONE --}}
+
+                            <div class="profile-info-item">
+
+                                <div class="profile-info-icon">
+
+                                    <i class="fas fa-phone"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span class="profile-info-label">
+                                        Phone Number
+                                    </span>
+
+                                    <strong id="viewPhone">
+
+                                        {{
+                                            $customer->phone_number
+                                            ?: 'Not provided'
+                                        }}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+
+                            {{-- ADDRESS --}}
+
+                            <div class="profile-info-item profile-address-item">
+
+                                <div class="profile-info-icon">
+
+                                    <i class="fas fa-location-dot"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span class="profile-info-label">
+                                        Address
+                                    </span>
+
+                                    <strong id="viewAddress">
+
+                                        {{
+                                            $customer->address
+                                            ?: 'Not provided'
+                                        }}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="profile-view-footer">
+
+                            <button
+                                type="button"
+                                class="profile-edit-button"
+                                onclick="showEditForm()"
+                            >
+
+                                <i class="fas fa-pen"></i>
+
+                                Edit Profile
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {{-- =========================================
+                         EDIT MODE
+                    ========================================== --}}
+
+                    <div
+                        id="editMode"
+                        class="profile-edit-mode"
+                    >
+
+                        <form
+                            method="POST"
+                            action="{{ url('/customer/profile/update') }}"
+                        >
+
+                            @csrf
+
+
+
+                            <div class="profile-form-grid">
+
+
+                                {{-- NAME --}}
+
+                                <div class="profile-form-group">
+
+                                    <label>
+                                        Full Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value="{{ $customer->name }}"
+                                        required
+                                    >
+
+                                </div>
+
+
+
+                                {{-- EMAIL --}}
+
+                                <div class="profile-form-group">
+
+                                    <label>
+                                        Email Address
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value="{{ $customer->email }}"
+                                        required
+                                    >
+
+                                </div>
+
+
+
+                                {{-- PHONE --}}
+
+                                <div class="profile-form-group">
+
+                                    <label>
+                                        Phone Number
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        name="phone_number"
+                                        value="{{ $customer->phone_number }}"
+                                        placeholder="Enter your phone number"
+                                    >
+
+                                </div>
+
+
+
+                                {{-- ADDRESS --}}
+
+                                <div class="profile-form-group profile-form-full">
+
+                                    <label>
+                                        Address
+                                    </label>
+
+                                    <textarea
+                                        name="address"
+                                        rows="4"
+                                        placeholder="Enter your delivery address"
+                                    >{{ $customer->address }}</textarea>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="profile-form-actions">
+
+
+                                <button
+                                    type="button"
+                                    class="profile-cancel-button"
+                                    onclick="hideEditForm()"
+                                >
+
+                                    Cancel
+
+                                </button>
+
+
+                                <button
+                                    type="submit"
+                                    class="profile-save-button"
+                                >
+
+                                    <span>
+                                        Save Changes
+                                    </span>
+
+                                    <span>
+                                        →
+                                    </span>
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    function showEditForm() {
+
+        document
+            .getElementById('viewMode')
+            .style.display =
+            'none';
+
+
+        document
+            .getElementById('editMode')
+            .style.display =
+            'block';
+
+    }
+
+
+    function hideEditForm() {
+
+        document
+            .getElementById('viewMode')
+            .style.display =
+            'block';
+
+
+        document
+            .getElementById('editMode')
+            .style.display =
+            'none';
+
+    }
+
+
+
+    setTimeout(
+        function() {
+
+            const toast =
+                document.querySelector(
+                    '.profile-toast'
+                );
+
+
+            if(toast) {
+
+                toast.style.opacity =
+                    '0';
+
+
+                setTimeout(
+                    function() {
+
+                        toast.remove();
+
+                    },
+                    300
+                );
+
+            }
+
+        },
+        3000
+    );
+
+</script>
 </body>
 </html>
