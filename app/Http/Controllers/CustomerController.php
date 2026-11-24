@@ -56,38 +56,48 @@ class CustomerController extends Controller
             return redirect('/login');
         }
 
-        // validate input
         $validated = $request->validate([
-            'service_type' => 'required',
-            'service_option' => 'required',
-            'device_brand' => 'required',
-            'problem_description' => 'required',
-            'preferred_date' => 'required',
-            'preferred_time' => 'required',
-            'address' => 'nullable'
+            'service_type' => 'required|string|max:50',
+            'service_option' => 'required|in:walk-in,door-to-door',
+            'device_type' => 'required|string|max:50',
+            'device_brand' => 'required|string|max:50',
+            'device_model' => 'nullable|string|max:100',
+            'problem_description' => 'required|string|max:2000',
+            'service_location' => 'nullable|required_if:service_option,walk-in|in:Winsoft Solution (HQ),Winsoft Solution (BP)',
+            'address' => 'nullable|required_if:service_option,door-to-door|string|max:500',
+            'preferred_date' => 'required|date|after_or_equal:today',
+            'preferred_time' => 'required|date_format:H:i'
         ]);
 
         $customerEmail = session()->get('LoggedCustomer');
         $customer = tbl_user::where('email', $customerEmail)->first();
 
-        // Insert service request
         $service = new tbl_service_request();
         $service->customer_id = $customer->user_id;
-        $service->service_type = $request->service_type;
-        $service->service_option = $request->service_option;
-        $service->problem_description = $request->problem_description;
-        $service->device_brand = $request->device_brand;
-        $service->preferred_date = $request->preferred_date;
-        $service->preferred_time = $request->preferred_time;
-        $service->address = $request->address;
+        $service->service_type = $validated['service_type'];
+        $service->service_option = $validated['service_option'];
+        $service->device_type = $validated['device_type'];
+        $service->device_brand = $validated['device_brand'];
+        $service->device_model = $validated['device_model'] ?? null;
+        $service->problem_description = $validated['problem_description'];
+        $service->preferred_date = $validated['preferred_date'];
+        $service->preferred_time = $validated['preferred_time'];
         $service->status = 'pending';
+
+        if($validated['service_option'] === 'door-to-door') {
+            $service->address = $validated['address'];
+            $service->service_location = null;
+        } else {
+            $service->address = null;
+            $service->service_location = $validated['service_location'];
+        }
+
         $service->save();
 
-        $requestId = $service->request_id;
         return view('customer.servicePage.servicePage', [
             'customer' => $customer,
             'showPopup' => true,
-            'requestId' => $requestId
+            'requestId' => $service->request_id
         ]);
     }
 
