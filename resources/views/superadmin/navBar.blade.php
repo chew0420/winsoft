@@ -16,7 +16,8 @@
         <div class="sidebar">
             <div class="p-3">
                 <h4 class="text-white text-center py-2 mb-2">
-                    <img src="/img/winsoftlogo.png" alt="Winsoft Logo"> Winsoft<br>
+                    <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
+                    {{ $websiteSettings->website_name }}<br>
                     <small class="fs-6">Admin Panel</small>
                 </h4>
                 <nav class="nav flex-column">
@@ -38,8 +39,11 @@
                     <a href="/superadmin/serviceRequestList" class="nav-link">
                         <i class="bi bi-tools"></i> Manage Request
                     </a>
-                    <a href="/superadmin/pageList" class="nav-link">
-                        <i class="bi bi-pencil-square"></i> Edit Website Page
+                    <a href="{{ url('/superadmin/pageList') }}" class="nav-link {{ request()->is('superadmin/pageList', 'superadmin/pageBuilder/*', 'superadmin/webEditor/*') ? 'active' : '' }}">
+                        <i class="bi bi-window-stack"></i> Website Pages
+                    </a>
+                    <a href="{{ url('/superadmin/websiteSettings') }}" class="nav-link {{ request()->is('superadmin/websiteSettings*') ? 'active' : '' }}">
+                        <i class="bi bi-gear"></i> Website Settings
                     </a>
                     <hr class="bg-light">
                     <a href="/logout" class="nav-link">

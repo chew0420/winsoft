@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Winsoft Solutions</title>
+    <title>Home | {{ $websiteSettings->website_name }}</title>
+    @include('shared.favicon')
     <link href="css/visitor.css" rel="stylesheet"/>
 </head>
 <body>

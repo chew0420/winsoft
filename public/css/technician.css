@@ -844,3 +844,10 @@
         grid-template-columns: 1fr;
     }
 }
+
+.sidebar img {
+    height: 35px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}

@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\File;
 use App\Models\tbl_service_request;
 use App\Models\tbl_order;
 use App\Models\tbl_page_section;
+use App\Models\tbl_website_setting;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SuperAdminController extends Controller
 {
@@ -381,6 +384,195 @@ class SuperAdminController extends Controller
         $pages = tbl_website_page::all();
 
         return view('superadmin.pageListPage.pageListPage', ['pages' => $pages]);
+    }
+
+    public function websiteSettings(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $activeTab = $request->query('tab', 'branding');
+
+        if(!in_array($activeTab, ['branding', 'footer', 'contact'], true)) {
+            $activeTab = 'branding';
+        }
+
+        return view('superadmin.websiteSettingsPage.websiteSettingsPage', [
+            'activeTab' => $activeTab
+        ]);
+    }
+
+    public function updateWebsiteSettings(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $request->validate([
+            'type' => 'required|in:website_name,website_logo,favicon'
+        ]);
+
+        $type = $request->input('type');
+
+        if($type === 'website_name') {
+            $validated = $request->validate([
+                'website_name' => 'required|string|max:100'
+            ]);
+
+            $settings = tbl_website_setting::findOrFail(1);
+            $settings->website_name = $validated['website_name'];
+            $settings->save();
+
+            return redirect('/superadmin/websiteSettings')->with('success', 'Website name updated successfully.');
+        }
+
+        if($type === 'website_logo') {
+            $request->validate([
+                'website_logo' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:max_width=4096,max_height=4096'
+            ]);
+        } else {
+            $request->validate([
+                'favicon' => 'required|image|mimes:png|max:1024|dimensions:min_width=16,min_height=16,max_width=512,max_height=512,ratio=1/1'
+            ]);
+        }
+
+        $image = $request->file($type);
+        $directory = public_path('img/branding');
+
+        File::ensureDirectoryExists($directory);
+
+        $filename = $type.'_'.Str::uuid().'.'.$image->extension();
+        $newPath = 'img/branding/'.$filename;
+
+        try {
+            $image->move($directory, $filename);
+
+            $oldPath = DB::transaction(function() use ($type, $newPath) {
+                $settings = tbl_website_setting::where('setting_id', 1)->lockForUpdate()->firstOrFail();
+                $oldPath = $settings->{$type};
+
+                $settings->{$type} = $newPath;
+                $settings->save();
+
+                return $oldPath;
+            });
+        } catch(\Throwable $e) {
+            $this->deleteOldBrandingImage($newPath);
+            report($e);
+
+            return redirect('/superadmin/websiteSettings')->with('error', 'Unable to update website image. Please try again.');
+        }
+
+        $this->deleteOldBrandingImage($oldPath);
+
+        $message = $type === 'website_logo' ? 'Website logo' : 'Website favicon';
+
+        return redirect('/superadmin/websiteSettings')->with('success', $message.' updated successfully.');
+    }
+
+    public function resetWebsiteSettings($type){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $defaults = [
+            'website_name' => tbl_website_setting::DEFAULT_NAME,
+            'website_logo' => tbl_website_setting::DEFAULT_LOGO,
+            'favicon' => null
+        ];
+
+        if(!array_key_exists($type, $defaults)) {
+            return redirect()->back()->with('error', 'Invalid website setting.');
+        }
+
+        $oldPath = DB::transaction(function() use ($type, $defaults) {
+            $settings = tbl_website_setting::where('setting_id', 1)->lockForUpdate()->firstOrFail();
+            $oldPath = $settings->{$type};
+
+            $settings->{$type} = $defaults[$type];
+            $settings->save();
+
+            return $oldPath;
+        });
+
+        if($type !== 'website_name') {
+            $this->deleteOldBrandingImage($oldPath);
+        }
+
+        return redirect('/superadmin/websiteSettings')->with('success', 'Website setting restored successfully.');
+    }
+
+    private function deleteOldBrandingImage($path){
+        if(!$path) {
+            return;
+        }
+
+        if(!preg_match('/^img\/branding\/(website_logo|favicon)_[a-f0-9-]{36}\.(jpg|jpeg|png|webp)$/i', $path)) {
+            return;
+        }
+
+        $isUsed = tbl_website_setting::where('website_logo', $path)
+            ->orWhere('favicon', $path)
+            ->exists();
+
+        if(!$isUsed && File::isFile(public_path($path))) {
+            File::delete(public_path($path));
+        }
+    }
+
+    public function updateFooterSettings(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $validated = $request->validate([
+            'footer_description' => 'nullable|string|max:1000',
+            'copyright_text' => 'required|string|max:255',
+            'show_footer_brand' => 'required|boolean',
+            'show_footer_links' => 'required|boolean',
+            'show_footer_contact' => 'required|boolean',
+            'show_footer_social' => 'required|boolean'
+        ]);
+
+        $settings = tbl_website_setting::findOrFail(1);
+
+        $settings->footer_description = $validated['footer_description'] ?? null;
+        $settings->copyright_text = $validated['copyright_text'];
+        $settings->show_footer_brand = $request->boolean('show_footer_brand');
+        $settings->show_footer_links = $request->boolean('show_footer_links');
+        $settings->show_footer_contact = $request->boolean('show_footer_contact');
+        $settings->show_footer_social = $request->boolean('show_footer_social');
+
+        $settings->save();
+
+        return redirect('/superadmin/websiteSettings?tab=footer')->with('success', 'Footer settings updated successfully.');
+    }
+
+    public function updateContactSettings(Request $request){
+        if(!session()->has('LoggedSuperadmin')) {
+            return redirect('/login');
+        }
+
+        $validated = $request->validate([
+            'contact_address' => 'nullable|string|max:1000',
+            'contact_phone' => 'nullable|string|max:30|regex:/^\+?[0-9 ()-]+$/',
+            'contact_email' => 'nullable|email|max:255',
+            'facebook_url' => 'nullable|url:https|max:500',
+            'instagram_url' => 'nullable|url:https|max:500',
+            'whatsapp_number' => 'nullable|string|regex:/^[1-9][0-9]{7,14}$/'
+        ]);
+
+        $settings = tbl_website_setting::findOrFail(1);
+
+        $settings->contact_address = $validated['contact_address'] ?? null;
+        $settings->contact_phone = $validated['contact_phone'] ?? null;
+        $settings->contact_email = $validated['contact_email'] ?? null;
+        $settings->facebook_url = $validated['facebook_url'] ?? null;
+        $settings->instagram_url = $validated['instagram_url'] ?? null;
+        $settings->whatsapp_number = $validated['whatsapp_number'] ?? null;
+
+        $settings->save();
+
+        return redirect('/superadmin/websiteSettings?tab=contact')->with('success', 'Contact and social settings updated successfully.');
     }
 
     public function webEditor($id){

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Register | Winsoft Solutions</title>
+    <title>Register | {{ $websiteSettings->website_name }}</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -547,10 +547,10 @@
     <nav class="register-navbar">
 
         <a href="/" class="register-navbar-brand">
-            <img src="/img/winsoftlogo.png" alt="Winsoft Solutions Logo">
+            <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
 
             <div class="register-navbar-brand-text">
-                <strong>Winsoft Solutions</strong>
+                <strong>{{ $websiteSettings->website_name }}</strong>
                 <span>Your Trusted IT Partner</span>
             </div>
         </a>
@@ -572,12 +572,12 @@
                 <div class="register-brand-content">
 
                     <div class="register-logo-box">
-                        <img src="/img/winsoftlogo.png" alt="Winsoft Solutions Logo">
+                        <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
                     </div>
 
                     <h1>
                         Join<br>
-                        <span>Winsoft Solutions</span>
+                        <span>{{ $websiteSettings->website_name }}</span>
                     </h1>
 
                     <p class="register-brand-description">

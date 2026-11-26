@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Winsoft Solutions</title>
+    <title>Home | {{ $websiteSettings->website_name }}</title>
     <link href="css/customer.css" rel="stylesheet"/>
+    @include('shared.favicon')
 </head>
 <body>
     @include('customer.navBar')

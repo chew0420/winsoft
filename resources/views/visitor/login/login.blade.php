@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login | Winsoft Solutions</title>
+    <title>Login | {{ $websiteSettings->website_name }}</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -549,10 +549,10 @@
     <nav class="login-navbar">
 
         <a href="/" class="login-navbar-brand">
-            <img src="/img/winsoftlogo.png" alt="Winsoft Solutions Logo">
+            <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
 
             <div class="login-navbar-brand-text">
-                <strong>Winsoft Solutions</strong>
+                <strong>{{ $websiteSettings->website_name }}</strong>
                 <span>Your Trusted IT Partner</span>
             </div>
         </a>
@@ -574,12 +574,12 @@
                 <div class="login-brand-content">
 
                     <div class="login-logo-box">
-                        <img src="/img/winsoftlogo.png" alt="Winsoft Solutions Logo">
+                        <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
                     </div>
 
                     <h1>
                         Welcome to<br>
-                        <span>Winsoft Solutions</span>
+                        <span>{{ $websiteSettings->website_name }}</span>
                     </h1>
 
                     <p class="login-brand-description">

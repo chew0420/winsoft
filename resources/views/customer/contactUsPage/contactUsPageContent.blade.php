@@ -26,24 +26,30 @@
         </section>
 
         <div class="cu-quick-grid">
-            <a href="tel:+60123456789" class="cu-quick-card">
-                <div class="cu-quick-icon"><i class="fas fa-phone"></i></div>
-                <div>
-                    <h3>Call Us</h3>
-                    <p>Speak directly with our team</p>
-                    <strong>012-345 6789</strong>
-                </div>
-                <i class="fas fa-arrow-right cu-quick-arrow"></i>
-            </a>
-            <a href="mailto:info@winsoft.com.my" class="cu-quick-card">
-                <div class="cu-quick-icon"><i class="fas fa-envelope"></i></div>
-                <div>
-                    <h3>Email Us</h3>
-                    <p>Send us your enquiries</p>
-                    <strong>info@winsoft.com.my</strong>
-                </div>
-                <i class="fas fa-arrow-right cu-quick-arrow"></i>
-            </a>
+            @if($websiteSettings->contact_phone)
+                <a href="{{ $websiteSettings->phone_link }}" class="cu-quick-card">
+                    <div class="cu-quick-icon"><i class="fas fa-phone"></i></div>
+                    <div>
+                        <h3>Call Us</h3>
+                        <p>Speak directly with our team</p>
+                        <strong>{{ $websiteSettings->contact_phone }}</strong>
+                    </div>
+                    <i class="fas fa-arrow-right cu-quick-arrow"></i>
+                </a>
+            @endif
+
+            @if($websiteSettings->contact_email)
+                <a href="mailto:{{ $websiteSettings->contact_email }}" class="cu-quick-card">
+                    <div class="cu-quick-icon"><i class="fas fa-envelope"></i></div>
+                    <div>
+                        <h3>Email Us</h3>
+                        <p>Send us your enquiries</p>
+                        <strong>{{ $websiteSettings->contact_email }}</strong>
+                    </div>
+                    <i class="fas fa-arrow-right cu-quick-arrow"></i>
+                </a>
+            @endif
+
             <a href="{{ url('/customer/storeLocation') }}" class="cu-quick-card">
                 <div class="cu-quick-icon"><i class="fas fa-location-dot"></i></div>
                 <div>
@@ -140,43 +146,83 @@
                     <span class="cu-eyebrow">Contact Details</span>
                     <h2>Get in Touch</h2>
 
-                    <div class="cu-info-item">
-                        <div class="cu-info-icon"><i class="fas fa-location-dot"></i></div>
-                        <div>
-                            <h3>Headquarters</h3>
-                            <p>17, Jalan Cempaka 1, Taman Bunga Cempaka Biru, 86400 Parit Raja, Batu Pahat, Johor</p>
-                            <a href="https://maps.app.goo.gl/UW84SctYLr9TPNLX7" target="_blank" rel="noopener noreferrer">Get Directions <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    @if($websiteSettings->contact_address)
+                        <div class="cu-info-item">
+                            <div class="cu-info-icon"><i class="fas fa-location-dot"></i></div>
+                            <div>
+                                <h3>Company Address</h3>
+                                <p>{{ $websiteSettings->contact_address }}</p>
+                                <a href="{{ $websiteSettings->contact_map_url }}" target="_blank" rel="noopener noreferrer">Get Directions <i class="fas fa-arrow-up-right-from-square"></i></a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
-                    <div class="cu-info-item">
-                        <div class="cu-info-icon"><i class="fas fa-phone"></i></div>
-                        <div>
-                            <h3>Phone Numbers</h3>
-                            <a href="tel:+60123456789">012-345 6789</a>
-                            <a href="tel:+60787654321">07-8765 4321</a>
+                    @if($websiteSettings->contact_phone)
+                        <div class="cu-info-item">
+                            <div class="cu-info-icon"><i class="fas fa-phone"></i></div>
+                            <div>
+                                <h3>Phone Number</h3>
+                                <a href="{{ $websiteSettings->phone_link }}">{{ $websiteSettings->contact_phone }}</a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
-                    <div class="cu-info-item">
-                        <div class="cu-info-icon"><i class="fas fa-envelope"></i></div>
-                        <div>
-                            <h3>Email Addresses</h3>
-                            <a href="mailto:info@winsoft.com.my">info@winsoft.com.my</a>
-                            <a href="mailto:support@winsoft.com.my">support@winsoft.com.my</a>
+                    @if($websiteSettings->contact_email)
+                        <div class="cu-info-item">
+                            <div class="cu-info-icon"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <h3>Email Address</h3>
+                                <a href="mailto:{{ $websiteSettings->contact_email }}">{{ $websiteSettings->contact_email }}</a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
+
+                    @if($websiteSettings->facebook_url || $websiteSettings->instagram_url || $websiteSettings->whatsapp_url)
+                        <div class="cu-info-item">
+                            <div class="cu-info-icon"><i class="fas fa-share-nodes"></i></div>
+                            <div>
+                                <h3>Connect With Us</h3>
+                                <div class="cu-social-links">
+                                    @if($websiteSettings->facebook_url)
+                                        <a href="{{ $websiteSettings->facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                    @endif
+
+                                    @if($websiteSettings->instagram_url)
+                                        <a href="{{ $websiteSettings->instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                            <i class="fab fa-instagram"></i>
+                                        </a>
+                                    @endif
+
+                                    @if($websiteSettings->whatsapp_url)
+                                        <a href="{{ $websiteSettings->whatsapp_url }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="cu-info-item">
                         <div class="cu-info-icon"><i class="fas fa-clock"></i></div>
                         <div>
-                            <h3>HQ Business Hours</h3>
-                            <p>Monday - Saturday</p>
-                            <strong>9:15 AM - 6:45 PM</strong>
-                            <p class="cu-closed-text">Sunday: Closed</p>
+                            <h3>Store Business Hours</h3>
+                            <p>Operating hours may vary by branch.</p>
+                            <a href="{{ url('/customer/storeLocation') }}">View Store Locations <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
+
+                @if($websiteSettings->whatsapp_url)
+                    <div class="cu-support-card cu-whatsapp-card">
+                        <div class="cu-support-icon"><i class="fab fa-whatsapp"></i></div>
+                        <h3>Chat With Us on WhatsApp</h3>
+                        <p>Have a quick question? Contact our team directly through WhatsApp.</p>
+                        <a href="{{ $websiteSettings->whatsapp_url }}" target="_blank" rel="noopener noreferrer">Start Chat <i class="fas fa-arrow-up-right-from-square"></i></a>
+                    </div>
+                @endif
 
                 <div class="cu-support-card">
                     <div class="cu-support-icon"><i class="fas fa-screwdriver-wrench"></i></div>

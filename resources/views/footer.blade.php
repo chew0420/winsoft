@@ -1,115 +1,104 @@
+@php
+    $isCustomerPage = request()->is('customerHomePage', 'customer', 'customer/*');
+
+    $footerLinks = [
+        ['Home', $isCustomerPage ? '/customerHomePage' : '/'],
+        ['Shopping', $isCustomerPage ? '/customer/shop' : '/shop'],
+        ['Service', $isCustomerPage ? '/customer/service' : '/login'],
+        ['Contact Us', $isCustomerPage ? '/customer/contactUs' : '/contactUs'],
+        ['Store Location', $isCustomerPage ? '/customer/storeLocation' : '/storeLocation']
+    ];
+
+    $hasContact = $websiteSettings->contact_address || $websiteSettings->contact_phone || $websiteSettings->contact_email;
+    $hasSocial = $websiteSettings->facebook_url || $websiteSettings->instagram_url || $websiteSettings->whatsapp_url;
+@endphp
+
 <footer class="site-footer">
+    @if($websiteSettings->show_footer_brand || $websiteSettings->show_footer_links || ($websiteSettings->show_footer_contact && $hasContact))
+        <div class="footer-container">
 
-    <div class="footer-container">
-
-        <!-- Company Info -->
-        <div class="footer-section footer-brand">
-            <img src="/img/winsoftlogo.png" alt="Winsoft Solutions Logo">
-
-            <h3>Winsoft Solutions</h3>
-
-            <p>
-                Your trusted IT partner for technology products,
-                professional services and reliable support.
-            </p>
-        </div>
-
-        <!-- Quick Links -->
-        <div class="footer-section">
-            <h4>Quick Links</h4>
-
-            <ul class="footer-links">
-                <li>
-                    <a href="/">
-                        <i class="fas fa-angle-right"></i>
-                        Home
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/shop">
-                        <i class="fas fa-angle-right"></i>
-                        Shopping
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/login">
-                        <i class="fas fa-angle-right"></i>
-                        Service
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/contactUs">
-                        <i class="fas fa-angle-right"></i>
-                        Contact Us
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/storeLocation">
-                        <i class="fas fa-angle-right"></i>
-                        Store Location
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Contact Info -->
-        <div class="footer-section">
-            <h4>Contact Us</h4>
-
-            <div class="footer-contact">
-
-                <div class="footer-contact-item">
-                    <i class="fas fa-location-dot"></i>
-                    <p>
-                        17, Jalan Cempaka 1,<br>
-                        Taman Bunga Cempaka Biru,<br>
-                        86400 Parit Raja, Johor
-                    </p>
+            @if($websiteSettings->show_footer_brand)
+                <div class="footer-section footer-brand">
+                    <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
+                    <h3>{{ $websiteSettings->website_name }}</h3>
+                    @if($websiteSettings->footer_description)
+                        <p>{{ $websiteSettings->footer_description }}</p>
+                    @endif
                 </div>
+            @endif
 
-                <div class="footer-contact-item">
-                    <i class="fas fa-phone"></i>
-                    <p>012-3456789</p>
+            @if($websiteSettings->show_footer_links)
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        @foreach($footerLinks as $link)
+                            <li>
+                                <a href="{{ url($link[1]) }}">
+                                    <i class="fas fa-angle-right"></i> {{ $link[0] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
 
-                <div class="footer-contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <p>tiam@winsoft.com.my</p>
+            @if($websiteSettings->show_footer_contact && $hasContact)
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <div class="footer-contact">
+
+                        @if($websiteSettings->contact_address)
+                            <div class="footer-contact-item">
+                                <i class="fas fa-location-dot"></i>
+                                <a href="{{ $websiteSettings->contact_map_url }}" target="_blank" rel="noopener noreferrer">{{ $websiteSettings->contact_address }}</a>
+                            </div>
+                        @endif
+
+                        @if($websiteSettings->contact_phone)
+                            <div class="footer-contact-item">
+                                <i class="fas fa-phone"></i>
+                                <a href="{{ $websiteSettings->phone_link }}">{{ $websiteSettings->contact_phone }}</a>
+                            </div>
+                        @endif
+
+                        @if($websiteSettings->contact_email)
+                            <div class="footer-contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:{{ $websiteSettings->contact_email }}">{{ $websiteSettings->contact_email }}</a>
+                            </div>
+                        @endif
+
+                    </div>
                 </div>
-
-            </div>
+            @endif
         </div>
+    @endif
 
-    </div>
-
-    <!-- Bottom Footer -->
     <div class="footer-bottom">
         <div class="footer-bottom-container">
+            <p>&copy; {{ date('Y') }} {{ $websiteSettings->copyright_text }}</p>
 
-            <p>
-                &copy; {{ date('Y') }} Winsoft Solutions Sdn Bhd.
-                All rights reserved.
-            </p>
+            @if($websiteSettings->show_footer_social && $hasSocial)
+                <div class="footer-social">
+                    @if($websiteSettings->facebook_url)
+                        <a href="{{ $websiteSettings->facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    @endif
 
-            <div class="footer-social">
-                <a href="#" aria-label="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
+                    @if($websiteSettings->instagram_url)
+                        <a href="{{ $websiteSettings->instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    @endif
 
-                <a href="#" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-
-                <a href="#" aria-label="Whatsapp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-            </div>
-
+                    @if($websiteSettings->whatsapp_url)
+                        <a href="{{ $websiteSettings->whatsapp_url }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
-
 </footer>

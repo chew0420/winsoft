@@ -79,6 +79,11 @@ Route::post('/superadmin/sections/reorder', [SuperAdminController::class, 'reord
 Route::delete('/superadmin/section/{sectionId}/delete', [SuperAdminController::class, 'deleteSection'])->name('superadmin.deleteSection');
 Route::get('/superadmin/section/{sectionId}/edit', [SuperAdminController::class, 'getSectionEditor'])->name('superadmin.getSectionEditor');
 Route::post('/superadmin/section/{sectionId}/toggle', [SuperAdminController::class, 'toggleSection'])->name('superadmin.toggleSection');
+Route::get('/superadmin/websiteSettings', [SuperAdminController::class, 'websiteSettings'])->name('superadmin.websiteSettings');
+Route::post('/superadmin/websiteSettings/update', [SuperAdminController::class, 'updateWebsiteSettings']);
+Route::post('/superadmin/websiteSettings/reset/{type}', [SuperAdminController::class, 'resetWebsiteSettings']);
+Route::post('/superadmin/websiteSettings/footer', [SuperAdminController::class, 'updateFooterSettings'])->name('superadmin.websiteSettings.footer');
+Route::post('/superadmin/websiteSettings/contact', [SuperAdminController::class, 'updateContactSettings'])->name('superadmin.websiteSettings.contact');
 Route::get('/', [SuperAdminController::class, 'visitorHome'])->name('home');
 Route::post('/technician/updateStatus/{id}', [TechnicianController::class, 'updateStatus']);
 Route::get('/technician/jobHistory', [TechnicianController::class, 'jobHistory']);

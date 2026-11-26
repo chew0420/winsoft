@@ -1,0 +1,1 @@
+<link rel="icon" href="{{ $websiteSettings->favicon_url }}">

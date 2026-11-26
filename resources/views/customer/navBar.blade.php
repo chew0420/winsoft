@@ -13,10 +13,10 @@
 
             <!-- Logo -->
             <a href="/customerHomePage" class="customer-brand">
-                <img src="/img/winsoftlogo.png" alt="Winsoft Logo">
+                <img src="{{ $websiteSettings->logo_url }}" alt="{{ $websiteSettings->website_name }}">
 
                 <div class="customer-brand-text">
-                    <span class="brand-name">Winsoft Solutions</span>
+                    <span class="brand-name">{{ $websiteSettings->website_name }}</span>
                     <span class="brand-tagline">Your Trusted IT Partner</span>
                 </div>
             </a>
