@@ -9,6 +9,7 @@ use App\Models\tbl_user;
 use App\Models\tbl_service_request;
 use App\Models\tbl_cart;
 use App\Models\tbl_order;
+use App\Models\tbl_contact_message;
 
 class CustomerController extends Controller
 {
@@ -162,10 +163,55 @@ class CustomerController extends Controller
     }
 
     public function contactUs(){
-        $customerEmail = session()->get('LoggedCustomer');
-        $customer = tbl_user::where('email', $customerEmail)->first();
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customer = tbl_user::where('email', session()->get('LoggedCustomer'))
+            ->where('role', 'customer')
+            ->where('status', 'active')
+            ->first();
+
+        if(!$customer) {
+            return redirect('/login');
+        }
 
         return view('customer.contactUsPage.contactUsPage', ['customer' => $customer]);
+    }
+
+    public function storeContactMessage(Request $request){
+        if(!session()->has('LoggedCustomer')) {
+            return redirect('/login');
+        }
+
+        $customer = tbl_user::where('email', session()->get('LoggedCustomer'))
+            ->where('role', 'customer')
+            ->where('status', 'active')
+            ->first();
+
+        if(!$customer) {
+            return redirect('/login');
+        }
+
+        $validated = $request->validate([
+            'phone' => 'nullable|string|max:20',
+            'subject' => 'required|in:General Inquiry,Product Question,Order Inquiry,Service Booking,Technical Support,Feedback,Others',
+            'message' => 'required|string|min:10|max:2000'
+        ]);
+
+        $contact = new tbl_contact_message();
+        $contact->customer_id = $customer->user_id;
+        $contact->name = $customer->name;
+        $contact->email = $customer->email;
+        $contact->phone = $validated['phone'] ?? null;
+        $contact->subject = $validated['subject'];
+        $contact->message = $validated['message'];
+        $contact->status = 'unread';
+        $contact->save();
+
+        return redirect('/customer/contactUs')
+            ->with('contact_success', true)
+            ->with('message_id', $contact->message_id);
     }
 
     public function storeLocation(){

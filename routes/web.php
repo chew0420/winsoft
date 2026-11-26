@@ -35,6 +35,7 @@ Route::post('/customer/service',[CustomerController::class, 'storeService']);
 Route::get('/customer/serviceRequests', [CustomerController::class, 'serviceRequests'])->name('customer.serviceRequests');
 Route::post('/customer/serviceRequests/cancel/{id}', [CustomerController::class, 'cancelServiceRequest'])->name('customer.cancelServiceRequest');
 Route::get('/customer/contactUs', [CustomerController::class, 'contactUs']);
+Route::post('/customer/contactUs', [CustomerController::class, 'storeContactMessage'])->middleware('throttle:5,1');
 Route::get('/customer/storeLocation', [CustomerController::class, 'storeLocation']);
 Route::get('/customer/product/{id}', [CustomerController::class, 'productDetail'])->name('product.detail');
 Route::post('/customer/cart/add', [CustomerController::class, 'addToCart']);
