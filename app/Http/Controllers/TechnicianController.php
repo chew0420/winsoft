@@ -91,14 +91,27 @@ class TechnicianController extends Controller
             return redirect('/login');
         }
 
-        $jobHistories = tbl_service_request::where('technician_id', $technician->user_id)
-            ->where('status', 'completed')
-            ->with('user')
+        $query = tbl_service_request::where('technician_id', $technician->user_id)
+            ->where('status', 'completed');
+
+        $stats = [
+            'total_completed' => (clone $query)->count(),
+            'monthly_completed' => (clone $query)
+                ->whereYear('completed_date', now()->year)
+                ->whereMonth('completed_date', now()->month)
+                ->count(),
+            'total_service_value' => (clone $query)->sum('final_price')
+        ];
+
+        $jobHistories = $query->with('user')
             ->orderBy('completed_date', 'desc')
+            ->orderBy('request_id', 'desc')
             ->get();
 
         return view('technician.jobHistoryPage.jobHistoryPage', [
-            'jobHistories' => $jobHistories
+            'technician' => $technician,
+            'jobHistories' => $jobHistories,
+            'stats' => $stats
         ]);
     }
 }

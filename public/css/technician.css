@@ -548,3 +548,299 @@
         width: 100%;
     }
 }
+
+/* =========================================================
+   TECHNICIAN JOB HISTORY
+========================================================= */
+
+.th-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.th-stats-grid .tj-stat-card {
+    min-width: 0;
+}
+
+.th-stats-grid .tj-stat-card h3 {
+    overflow-wrap: anywhere;
+}
+
+/* Search and Filters */
+
+.th-filter-bar {
+    display: grid;
+    grid-template-columns: minmax(180px, 2fr) repeat(3, minmax(125px, 1fr)) auto;
+    align-items: end;
+    gap: 14px;
+    padding: 18px 22px;
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.th-filter-group,
+.th-filter-search {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.th-filter-bar label {
+    margin: 0;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.th-filter-bar .tj-search {
+    min-height: 40px;
+    background: #fff;
+}
+
+.th-filter-bar .tj-search input {
+    width: 100%;
+    min-width: 0;
+}
+
+.th-filter-bar .form-control,
+.th-filter-bar .form-select {
+    min-height: 40px;
+    border-color: #e5e7eb;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.th-filter-bar .btn {
+    min-height: 40px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.th-result-bar {
+    padding: 14px 22px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* History Table */
+
+.th-history-table {
+    min-width: 850px;
+}
+
+.th-history-table thead th {
+    padding: 14px 16px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.th-history-table tbody td {
+    padding: 18px 16px;
+    border-color: #eef0f2;
+    color: #334155;
+    font-size: 13px;
+}
+
+.th-history-table td strong {
+    display: block;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.th-history-table td small {
+    display: block;
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.th-history-table td .badge {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.th-history-table td .btn {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.th-job-id {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.th-completed-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    color: #15803d;
+    font-size: 10px;
+}
+
+.th-final-price {
+    color: #15803d !important;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Job Details Modal */
+
+.th-completion-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+    padding: 18px;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    background: #f0fdf4;
+}
+
+.th-completion-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #16a34a;
+    color: #fff;
+    font-size: 22px;
+}
+
+.th-completion-banner strong {
+    color: #166534;
+    font-size: 15px;
+}
+
+.th-completion-banner p {
+    margin: 4px 0 0;
+    color: #15803d;
+    font-size: 12px;
+}
+
+.th-modal-section {
+    margin-top: 22px;
+}
+
+.th-modal-section h6 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.th-full-width {
+    grid-column: 1 / -1;
+}
+
+.th-repair-notes {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    padding: 16px;
+    border-left: 3px solid #94a3b8;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+/* Service Pricing */
+
+.th-pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.th-pricing-grid > div {
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+.th-pricing-grid span {
+    display: block;
+    margin-bottom: 7px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.th-pricing-grid strong {
+    display: block;
+    color: #1f2937;
+    font-size: 19px;
+    overflow-wrap: anywhere;
+}
+
+.th-pricing-grid .th-final-price {
+    white-space: normal;
+}
+
+.th-pricing-grid > div:last-child {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+
+/* Responsive */
+
+@media (max-width: 1200px) {
+    .th-filter-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .th-filter-search {
+        grid-column: 1 / -1;
+    }
+
+    .th-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .th-stats-grid .tj-stat-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 576px) {
+    .th-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .th-stats-grid .tj-stat-card:last-child {
+        grid-column: auto;
+    }
+
+    .th-filter-bar {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .th-filter-search {
+        grid-column: auto;
+    }
+
+    .th-pricing-grid {
+        grid-template-columns: 1fr;
+    }
+}
