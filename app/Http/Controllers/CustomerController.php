@@ -140,23 +140,23 @@ class CustomerController extends Controller
             return redirect('/login');
         }
 
-        $customerEmail = session()->get('LoggedCustomer');
-        $customer = tbl_user::where('email', $customerEmail)->first();
+        $customer = tbl_user::where('email', session()->get('LoggedCustomer'))->first();
 
-        $service = tbl_service_request::where('request_id', $id)
+        if(!$customer) {
+            return redirect('/login');
+        }
+
+        $updated = tbl_service_request::where('request_id', $id)
             ->where('customer_id', $customer->user_id)
-            ->first();
+            ->where('status', 'pending')
+            ->update([
+                'status' => 'cancelled',
+                'technician_id' => null
+            ]);
 
-        if(!$service) {
-            return redirect()->back()->with('error', 'Service request not found.');
+        if(!$updated) {
+            return redirect()->back()->with('error', 'This service request cannot be cancelled.');
         }
-
-        if($service->status !== 'pending') {
-            return redirect()->back()->with('error', 'Only pending service requests can be cancelled.');
-        }
-
-        $service->status = 'cancelled';
-        $service->save();
 
         return redirect()->back()->with('success', 'Service request cancelled successfully.');
     }

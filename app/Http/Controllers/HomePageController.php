@@ -96,13 +96,40 @@ class HomePageController extends Controller
 
         } else if(session()->has('LoggedTechnician')){
             $technicianSession = session()->get('LoggedTechnician');
-            $technician = tbl_user::where('email', $technicianSession)->first();
 
-            $assignedJobs = tbl_service_request::where('technician_id', $technician->user_id)->orderBy('created_at', 'desc')->where('status', '!=', 'completed')->with('user')->get();
-            return view('technician.homePage.homePage', ['assignedJobs' => $assignedJobs]);
+            $technician = tbl_user::where('email', $technicianSession)
+                ->where('role', 'technician')
+                ->where('status', 'active')
+                ->first();
+
+            if(!$technician) {
+                session()->forget('LoggedTechnician');
+                return redirect('/login');
+            }
+
+            $assignedJobs = tbl_service_request::where('technician_id', $technician->user_id)
+                ->whereIn('status', ['pending', 'confirmed', 'in-progress'])
+                ->with('user')
+                ->orderBy('preferred_date', 'asc')
+                ->orderBy('preferred_time', 'asc')
+                ->get();
+
+            $counts = [
+                'all' => $assignedJobs->count(),
+                'pending' => $assignedJobs->where('status', 'pending')->count(),
+                'confirmed' => $assignedJobs->where('status', 'confirmed')->count(),
+                'in-progress' => $assignedJobs->where('status', 'in-progress')->count(),
+                'completed' => tbl_service_request::where('technician_id', $technician->user_id)->where('status', 'completed')->count()
+            ];
+
+            return view('technician.homePage.homePage', [
+                'assignedJobs' => $assignedJobs,
+                'technician' => $technician,
+                'counts' => $counts
+            ]);
 
         } else {
-            return view('login')->with('fail','Login expired,Please Login Again');
+            return view('login')->with('fail', 'Login expired, Please Login Again');
         }
         
     }

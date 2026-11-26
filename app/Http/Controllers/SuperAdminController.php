@@ -1029,15 +1029,42 @@ class SuperAdminController extends Controller
         return $updatedContent;
     }
 
-    public function serviceRequestList(){
+    public function serviceRequestList(Request $request){
         if(!session()->has('LoggedSuperadmin')) {
             return redirect('/login');
         }
 
-        $requests = tbl_service_request::orderBy('created_at','desc')->with('user','technician')->get();
-        $technicians = tbl_user::where('role','technician')->get();
+        $status = $request->get('status', 'all');
+        $allowedStatuses = ['all', 'pending', 'confirmed', 'in-progress', 'completed', 'cancelled'];
 
-        return view('superadmin.serviceRequestListPage.serviceRequestListPage',['requests'=>$requests, 'technicians'=>$technicians]);
+        if(!in_array($status, $allowedStatuses)) {
+            $status = 'all';
+        }
+
+        $query = tbl_service_request::with('user', 'technician');
+
+        if($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $requests = $query->orderBy('created_at', 'desc')->get();
+        $technicians = tbl_user::where('role', 'technician')->where('status', 'active')->orderBy('name')->get();
+
+        $counts = [
+            'all' => tbl_service_request::count(),
+            'pending' => tbl_service_request::where('status', 'pending')->count(),
+            'confirmed' => tbl_service_request::where('status', 'confirmed')->count(),
+            'in-progress' => tbl_service_request::where('status', 'in-progress')->count(),
+            'completed' => tbl_service_request::where('status', 'completed')->count(),
+            'cancelled' => tbl_service_request::where('status', 'cancelled')->count()
+        ];
+
+        return view('superadmin.serviceRequestListPage.serviceRequestListPage', [
+            'requests' => $requests,
+            'technicians' => $technicians,
+            'current_status' => $status,
+            'counts' => $counts
+        ]);
     }
 
     public function assignTechnician(Request $request, $id){
@@ -1045,21 +1072,42 @@ class SuperAdminController extends Controller
             return redirect('/login');
         }
 
-        $serviceRequest = tbl_service_request::find($id);
-        if(!$serviceRequest) {
-            return redirect()->back()->with('error', 'Service request not found');
+        $validated = $request->validate([
+            'technician_id' => 'required|integer|exists:tbl_user,user_id',
+            'quotation' => 'nullable|numeric|min:0|max:99999999.99'
+        ]);
+
+        $technician = tbl_user::where('user_id', $validated['technician_id'])
+            ->where('role', 'technician')
+            ->where('status', 'active')
+            ->first();
+
+        if(!$technician) {
+            return redirect()->back()->with('error', 'Invalid technician selected.');
         }
 
-        $technicianId = $request->input('technician_id');
+        return \Illuminate\Support\Facades\DB::transaction(function() use ($validated, $technician, $id) {
+            $serviceRequest = tbl_service_request::where('request_id', $id)->lockForUpdate()->first();
 
-        if($technicianId){
-            $serviceRequest->technician_id = $technicianId;
+            if(!$serviceRequest) {
+                return redirect()->back()->with('error', 'Service request not found.');
+            }
+
+            if(!in_array($serviceRequest->status, ['pending', 'confirmed'])) {
+                return redirect()->back()->with('error', 'This service request cannot be reassigned.');
+            }
+
+            $serviceRequest->technician_id = $technician->user_id;
+
+            if(isset($validated['quotation'])) {
+                $serviceRequest->quotation = $validated['quotation'];
+            }
+
+            $serviceRequest->status = 'confirmed';
             $serviceRequest->save();
 
             return redirect()->back()->with('success', 'Technician assigned successfully!');
-        }
-
-        return redirect()->back()->with('error', 'Please select a technician');
+        });
     }
 
     public function orderList(Request $request){
